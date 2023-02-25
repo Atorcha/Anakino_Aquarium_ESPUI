@@ -33,7 +33,7 @@
   while (WiFi.status() != WL_CONNECTED) {
   Serial.print('.');
   contador_2++;
-  if (contador_2 == 100) {   
+  if (contador_2 == 80) {   
   ESP.restart(); // Restart ESP
   } 
   delay(1000);

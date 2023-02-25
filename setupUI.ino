@@ -46,12 +46,12 @@ void setupUI(){
     auto tab2 = ESPUI.addControl(Tab, "", "Parámetros");
         
     //MODO FUNCIONAMIENTO LUZ
-    //so that the storage is allocated in global memory and not just on the stack of this function.)
-     static String optionValues[] {"Modo AUTO", "MODO ON", "MODO OFF"};
-    auto mainselector_luz = ESPUI.addControl(Select, "Modo Luz", "", Wetasphalt, tab2, generalCallback);
-    for(auto const& v : optionValues) {
-    ESPUI.addControl(Option, v.c_str(), v, None, mainselector_luz);
-  }
+  uint16_t select1
+        = ESPUI.addControl(ControlType::Select, "Modo Luz:", "", ControlColor::Alizarin, tab2, &selectCall);
+    ESPUI.addControl(ControlType::Option, "MODO AUTO", "MODO AUTO", ControlColor::Alizarin, select1);
+    ESPUI.addControl(ControlType::Option, "MODO ON", "MODO ON", ControlColor::Alizarin, select1);
+    ESPUI.addControl(ControlType::Option, "MODO OFF", "MODO OFF", ControlColor::Alizarin, select1);
+    
    // INTRODUCCION HORA ENCENDIDA/APAGADA
     text_time1 = ESPUI.addControl(Text, "Luz", luz_on_temp, Turquoise, tab2, generalCallback); // INPUT ON DEL PRIMER TIMER
     ESPUI.setInputType(text_time1, "time");

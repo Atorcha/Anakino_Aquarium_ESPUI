@@ -131,12 +131,12 @@ void boton1_Callback(Control* sender, int type)
     {
     case B_DOWN:
         Serial.println("Button DOWN");
-        //SaveLEDToEEPROM();
         SAVEtoNVS();
         break;
 
     case B_UP:
         Serial.println("Button UP");
+        SAVEtoNVS();
         break;
     }
 }
@@ -179,11 +179,7 @@ void generalCallback(Control *sender, int type) {
     break;
     
     case 14:    // MODO LUZ
-     if (String(sender->value)==("MODO AUTO")) {(modo_luz = 1);}
-     if (String(sender->value)==("MODO ON")) {(modo_luz = 2);}
-     if (String(sender->value)==("MODO OFF")) {(modo_luz = 3);}
-     Serial.print("Modo Luz: ");
-     Serial.println(modo_luz);
+     
     break;
     
     case 18: // caso de hora luz ON
@@ -223,6 +219,19 @@ void generalCallback(Control *sender, int type) {
     break;
     }
   }
+}
+
+void selectCall(Control* sender, int value)
+{
+    Serial.print("Select: ID: ");
+    Serial.print(sender->id);
+    Serial.print(", Value: ");
+    Serial.println(sender->value);
+    if (String(sender->value)==("MODO AUTO")) {(modo_luz = 1);}
+    if (String(sender->value)==("MODO ON")) {(modo_luz = 2);}
+    if (String(sender->value)==("MODO OFF")) {(modo_luz = 3);}
+    Serial.print("Modo Luz: ");
+    Serial.println(modo_luz);
 }
 
 void numberCall(Control* sender, int type)
