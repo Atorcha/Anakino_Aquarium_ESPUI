@@ -26,7 +26,7 @@ void check_calentador(){           // activa calentador
   Serial.println("check calentador");
   #endif
   
-    if (temp_agua > temp_agua_des + 0.5 || temp_agua < temp_agua_des - 0.5)  {
+    if (temp_agua > temp_agua_des + 0.2 || temp_agua < temp_agua_des - 0.2)  {
       //alarma_activa =true;
       } 
       else { 
