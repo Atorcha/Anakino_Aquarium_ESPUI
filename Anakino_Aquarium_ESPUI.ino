@@ -37,9 +37,10 @@
 // mejores pines OUTPUT 32,33,25,26,27,14,23,22,21,19,18,5,17
 // mejores pines INPUT 36,39,34,35,32,33,25,26,27,14,23,22,21,19,18
 #define sensores_temp  13  //  Sensores de temp de agua y pantalla leds
-#define calentador 17      // Calentador    * RELE 1         
-#define luz   19           // luz      * luz
-#define aireador 29
+#define calentador 17      // Calentador    * ENCHUFE 1         
+#define luz   18           // luz      * ENCHUFE 2
+#define aireador 19          //     * ENCHUFE 3
+#define rele 21             //      * ENCHUFE 4
 
 //*********************** Variables de control de temperatura del agua ********************
 
@@ -67,23 +68,25 @@ int ai_off_minuto;
 uint16_t tempHBLabelId, humedadHBLabelId, aguatempId; //statusLabelId;
 uint16_t realtime_LabelId;
 uint16_t button1, button2;
-uint16_t text_time1, text_time2;
+uint16_t text_time1, text_time2, text_time_ai1, text_time_ai2;
 char timeString[9];
 
 //UI handles
 uint16_t wifi_ssid_text, wifi_pass_text;
-uint16_t mainLabel, Switch_4, Switch_3, Switch_2, Switch_1, mainSlider, mainText, mainNumber, mainScrambleButton, mainTime;
+uint16_t mainLabel, gruposreles, Switch_4, Switch_3, Switch_2, Switch_1, mainSlider, mainText, mainNumber, mainScrambleButton, mainTime;
 uint16_t styleButton, styleLabel, styleSwitcher, styleSlider, styleButton2, styleLabel2, styleSlider2;
-uint16_t graph;
 
 // Variables to save date and time
 String realtime;
 String luz_on_temp;
 String luz_off_temp;
+String ai_on_temp;
+String ai_off_temp;
+
 
 unsigned char th; // tiempo en hora
 unsigned char tm; // tiempo en minuto
-
+/*
 int on1_hora; /// temporizador 1 hora ON
 int on1_minuto; //// temporizador 1 minuto ON
 int off1_hora; /// temporizador 1 hora OFF
@@ -92,7 +95,7 @@ int on2_hora; /// temporizador 2 hora ON
 int on2_minuto; //// temporizador 2 minuto ON
 int off2_hora; /// temporizador 2 hora OFF
 int off2_minuto; //// temporizador 2 minuto OFF
-
+*/
 ////////////////////////////////////////////////////////////////
 
 Preferences nvs;
@@ -130,8 +133,7 @@ void boton1_Callback(Control* sender, int type)
     switch (type)
     {
     case B_DOWN:
-        Serial.println("Button DOWN");
-        SAVEtoNVS();
+       // Serial.println("Button DOWN");
         break;
 
     case B_UP:
@@ -158,7 +160,8 @@ void boton2_Callback(Control* sender, int type)
 
 //Most elements in this test UI are assigned this generic callback which prints some
 //basic information. Event types are defined in ESPUI.h
-void generalCallback(Control *sender, int type) {
+void luz_on_Callback(Control *sender, int type) ///////////////// luz
+{
   Serial.print("CB: id(");
   Serial.print(sender->id);
   Serial.print(") Type(");
@@ -167,38 +170,28 @@ void generalCallback(Control *sender, int type) {
   Serial.print(sender->label);
   Serial.print("' = ");
   Serial.println(sender->value);
-  
-  switch (sender->id)
-  {
-    case 4:
-     Serial.println("rele 1");
-    break;
-    
-    case 5:
-     Serial.println("rele 2");
-    break;
-    
-    case 14:    // MODO LUZ
-     
-    break;
-    
-    case 18: // caso de hora luz ON
-    {
-    //Convert the hours. Rely on the fact that it will stop converting when it hits the :
-    luz_on_hora = sender->value.toInt();
-    //Look for the : 
-   char *mins_str = strstr(sender->value.c_str(), ":");
-   //strstr returns a pointer to where the : was found. Increment past it.
-   mins_str += 1;
-   //And finally convert the rest of the string.
-   luz_on_minuto = String(mins_str).toInt();
-   Serial.print("Luz ON numMins: ");
-   Serial.println(NumMins(luz_on_hora,luz_on_minuto));
-    break;
-    }
-    
-    case 19:  // caso de hora Luz OFF
-    {
+  //Convert the hours. Rely on the fact that it will stop converting when it hits the :
+  luz_on_hora = sender->value.toInt();
+  //Look for the : 
+ char *mins_str = strstr(sender->value.c_str(), ":");
+ //strstr returns a pointer to where the : was found. Increment past it.
+ mins_str += 1;
+ //And finally convert the rest of the string.
+ luz_on_minuto = String(mins_str).toInt();
+ Serial.print("Luz ON numMins: ");
+ Serial.println(NumMins(luz_on_hora,luz_on_minuto));
+}
+
+   void luz_off_Callback(Control *sender, int type) 
+   {
+  Serial.print("CB: id(");
+  Serial.print(sender->id);
+  Serial.print(") Type(");
+  Serial.print(type);
+  Serial.print(") '");
+  Serial.print(sender->label);
+  Serial.print("' = ");
+  Serial.println(sender->value);
     //Convert the hours. Rely on the fact that it will stop converting when it hits the :
     luz_off_hora = sender->value.toInt();
     //Look for the : 
@@ -209,16 +202,32 @@ void generalCallback(Control *sender, int type) {
    luz_off_minuto = String(mins_str).toInt();
    Serial.print("Luz OFF NumMins: ");
    Serial.println(NumMins(luz_off_hora,luz_off_minuto));
-   break;
-  }
-    case 20:  // caso de temperatura del agua deseada
-    {
-    temp_agua_des = sender->value.toInt();
-    Serial.print("Temp agua deseada: ");
-    Serial.println(temp_agua_des);
-    break;
-    }
-  }
+   }
+
+  void temperatura_Callback(Control *sender, int type) 
+  {
+  Serial.print("CB: id(");
+  Serial.print(sender->id);
+  Serial.print(") Type(");
+  Serial.print(type);
+  Serial.print(") '");
+  Serial.print(sender->label);
+  Serial.print("' = ");
+  Serial.println(sender->value);
+  temp_agua_des = sender->value.toInt();
+  Serial.print("Temp agua deseada: ");
+  Serial.println(temp_agua_des);
+}
+
+void generalCallback(Control *sender, int type) {
+  Serial.print("CB: id(");
+  Serial.print(sender->id);
+  Serial.print(") Type(");
+  Serial.print(type);
+  Serial.print(") '");
+  Serial.print(sender->label);
+  Serial.print("' = ");
+  Serial.println(sender->value);
 }
 
 void selectCall(Control* sender, int value)
@@ -233,6 +242,64 @@ void selectCall(Control* sender, int value)
     Serial.print("Modo Luz: ");
     Serial.println(modo_luz);
 }
+
+void selectCall_2(Control* sender, int value) //// aireador
+{
+    Serial.print("Select: ID: ");
+    Serial.print(sender->id);
+    Serial.print(", Value: ");
+    Serial.println(sender->value);
+    if (String(sender->value)==("MODO AUTO")) {(modo_ai = 1);}
+    if (String(sender->value)==("MODO ON")) {(modo_ai = 2);}
+    if (String(sender->value)==("MODO OFF")) {(modo_ai = 3);}
+    Serial.print("Modo ai: ");
+    Serial.println(modo_ai);
+}
+
+void ai_on_Callback(Control *sender, int type) ///////////////// aireador
+{
+  Serial.print("CB: id(");
+  Serial.print(sender->id);
+  Serial.print(") Type(");
+  Serial.print(type);
+  Serial.print(") '");
+  Serial.print(sender->label);
+  Serial.print("' = ");
+  Serial.println(sender->value);
+  //Convert the hours. Rely on the fact that it will stop converting when it hits the :
+  ai_on_hora = sender->value.toInt();
+  //Look for the : 
+ char *mins_str = strstr(sender->value.c_str(), ":");
+ //strstr returns a pointer to where the : was found. Increment past it.
+ mins_str += 1;
+ //And finally convert the rest of the string.
+ ai_on_minuto = String(mins_str).toInt();
+ Serial.print("Ai ON numMins: ");
+ Serial.println(NumMins(ai_on_hora,ai_on_minuto));
+}
+
+   void ai_off_Callback(Control *sender, int type) 
+   {
+  Serial.print("CB: id(");
+  Serial.print(sender->id);
+  Serial.print(") Type(");
+  Serial.print(type);
+  Serial.print(") '");
+  Serial.print(sender->label);
+  Serial.print("' = ");
+  Serial.println(sender->value);
+    //Convert the hours. Rely on the fact that it will stop converting when it hits the :
+    ai_off_hora = sender->value.toInt();
+    //Look for the : 
+   char *mins_str = strstr(sender->value.c_str(), ":");
+   //strstr returns a pointer to where the : was found. Increment past it.
+   mins_str += 1;
+   //And finally convert the rest of the string.
+   ai_off_minuto = String(mins_str).toInt();
+   Serial.print("ai OFF NumMins: ");
+   Serial.println(NumMins(ai_off_hora,ai_off_minuto));
+   }
+
 
 void numberCall(Control* sender, int type)
 {

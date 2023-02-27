@@ -7,28 +7,30 @@ void check_ai(){
       if (modo_ai == 1)      // modo aireador en AUTO
       {       
         if (temp_ai == 1 ) // si en hora
-        {      
-        Serial.println(" AI Auto ON"); 
-        //SetRele(aireador,HIGH); //activa rele 
-        
+        {
+          ESPUI.updateSwitcher(Switch_2, true);      
+        //Serial.println(" AI Auto ON"); 
+          digitalWrite(aireador,HIGH); //activa rele        
         }
       else if (temp_ai == 0)
-      {        
-        Serial.println("AI Auto OFF");
-        //SetRele(aireador,LOW); //desactiva rele
+      { 
+        ESPUI.updateSwitcher(Switch_2, false);       
+        //Serial.println("AI Auto OFF");
+        digitalWrite(aireador,LOW); //desactiva rele
       }
     }
       
    else if (modo_ai == 2)
     {
-    Serial.println("AI Manual ON");  
-    //SetRele(aireador,HIGH); // Encendemos  ai, 
-    }
+      ESPUI.updateSwitcher(Switch_2, true);
+    //Serial.println("AI Manual ON");  
+      digitalWrite(aireador,HIGH); //activa rele    
+      }
     else if   
       (modo_ai == 3){
-      Serial.println("AI Manual OFF");  
-      //SetRele(aireador,LOW); // Apagamos  ai, 
-      
+      ESPUI.updateSwitcher(Switch_2, false);
+     // Serial.println("AI Manual OFF");  
+      digitalWrite(aireador,LOW); // Apagamos  ai,   
     }    
    }
 /////////////////////////////////////////////////////////////////

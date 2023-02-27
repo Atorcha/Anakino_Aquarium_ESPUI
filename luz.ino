@@ -47,17 +47,11 @@ void tempo_luz(){
     {       
       if((NumMins(th,tm) >= NumMins(luz_on_hora,luz_on_minuto)) && (NumMins(th,tm) <= NumMins(luz_off_hora,luz_off_minuto)))
       {
-          temp_luz = 1;
-          
-         // Serial.println(" Temp true");
-        //SetRele(temporizador1, HIGH);        // activa rele
+          temp_luz = 1; // activa rele
       }
       if (NumMins(th,tm) > NumMins(luz_off_hora,luz_off_minuto))
       {
-         temp_luz = 0;
-         //ESPUI.updateSwitcher(Switch_4, false);
-        // Serial.println(" Temp false");
-       //SetRele(temporizador1, LOW);       // desactiva rele
+         temp_luz = 0; // desactiva rele
       }
     }
     if(NumMins(luz_off_hora,luz_off_minuto) < NumMins(luz_on_hora,luz_on_minuto))
@@ -65,25 +59,16 @@ void tempo_luz(){
      // Serial.println(" Temp 2");                     
       if(NumMins(th,tm) >= NumMins(luz_on_hora,luz_on_minuto)) 
       {
-         temp_luz = 1;
-         //ESPUI.updateSwitcher(Switch_4, true);
-       //  Serial.println(" Temp true");
-       //SetRele(temporizador1, HIGH);          // activa rele
+         temp_luz = 1;  // activa rele       
       }
 
       if (NumMins(th,tm) < NumMins(luz_off_hora,luz_off_minuto)) 
       {
-          temp_luz = 1;
-         // ESPUI.updateSwitcher(Switch_4, true);
-        //  Serial.println(" Temp true");
-        //SetRele(temporizador1, HIGH);          //  ACTIVA RELE
+          temp_luz = 1;  //  ACTIVA RELE         
       }     
       if ((NumMins(th,tm) >= NumMins(luz_off_hora,luz_off_minuto)) && (NumMins(th,tm) < NumMins(luz_on_hora,luz_on_minuto)))
       {
-          temp_luz = 0;
-         // ESPUI.updateSwitcher(Switch_4, false);
-          //Serial.println(" Temp false");
-        //SetRele(temporizador1, LOW);         // desactiva rele
+          temp_luz = 0; // desactiva rele
       } 
     }  
  }
