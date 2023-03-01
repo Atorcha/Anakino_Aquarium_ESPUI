@@ -9,6 +9,7 @@
   password = nvs.getString("password", "");
   
   if (ssid == "" || password == ""){
+  modo_wifi_cliente = false;   
   Serial.println("No values saved for ssid or password");
   Serial.println("\nCreating access point...");
   WiFi.mode(WIFI_AP);
@@ -23,6 +24,7 @@
     } while(connect_timeout);
   }
   else {
+  modo_wifi_cliente= true;  
   Serial.println("Modo Cliente");
   Serial.println("\n\nTry to connect to: ");
   WiFi.mode(WIFI_STA);
@@ -33,7 +35,7 @@
   while (WiFi.status() != WL_CONNECTED) {
   Serial.print('.');
   contador_2++;
-  if (contador_2 == 80) {   
+  if (contador_2 == 30) {   
   ESP.restart(); // Restart ESP
   } 
   delay(1000);

@@ -64,6 +64,8 @@ int ai_on_minuto;
 int ai_off_hora;      // Horario para apagar ai.
 int ai_off_minuto;
 
+bool modo_wifi_cliente;//  si modo cliente = true checkea la conexion wifi para restart ESP32
+
 
 uint16_t tempHBLabelId, humedadHBLabelId, aguatempId; //statusLabelId;
 uint16_t realtime_LabelId;

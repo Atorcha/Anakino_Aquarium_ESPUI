@@ -28,7 +28,7 @@ void check_calentador(){           // activa calentador
   
     if (temp_agua > temp_agua_des + 0.2 || temp_agua < temp_agua_des - 0.2)  {
       //alarma_activa =true;
-      } 
+      }  
       else { 
         //alarma_activa = false;
         }
