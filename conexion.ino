@@ -9,11 +9,12 @@
   password = nvs.getString("password", "");
   
   if (ssid == "" || password == ""){
+    
   modo_wifi_cliente = false;   
   Serial.println("No values saved for ssid or password");
   Serial.println("\nCreating access point...");
   WiFi.mode(WIFI_AP);
-  WiFi.softAPConfig(IPAddress(192, 168, 1, 1), IPAddress(192, 168, 1, 1), IPAddress(255, 255, 255, 0));
+  WiFi.softAPConfig(IPAddress(192, 168, 4, 1), IPAddress(192, 168, 4, 1), IPAddress(255, 255, 255, 0));
   WiFi.softAP("Anakino_control");
 
     connect_timeout = 20;
@@ -21,25 +22,29 @@
       delay(250);
       Serial.print(",");
       connect_timeout--;
-    } while(connect_timeout);
+    } 
+    while(connect_timeout);
   }
   else {
-  modo_wifi_cliente= true;  
+  modo_wifi_cliente= true;
   Serial.println("Modo Cliente");
-  Serial.println("\n\nTry to connect to: ");
+  Serial.println("\nTry to connect to: ");
   WiFi.mode(WIFI_STA);
+   delay(2000);
   WiFi.begin(ssid.c_str(), password.c_str());
   Serial.println(ssid.c_str());
   Serial.println(password.c_str());
   Serial.print("\nConnecting to WiFi ..");
   while (WiFi.status() != WL_CONNECTED) {
-  Serial.print('.');
-  contador_2++;
-  if (contador_2 == 30) {   
-  ESP.restart(); // Restart ESP
-  } 
+      delay(500);   
+      Serial.print('.');
+      if (contador_2 == 60) {
+          ESP.restart(); // Restart ESP
+      }
+   contador_2++; 
   delay(1000);
   }
+    Serial.println("Connected to AP");
     Serial.print("RRSI: ");
     Serial.println(WiFi.RSSI());  
 }

@@ -3,8 +3,12 @@
 // VOID LOOP
 ///////////////////////////////////////////////////////////////
 
-void loop(void)
+void loop()
 {    
+   TIMERG0.wdt_wprotect=TIMG_WDT_WKEY_VALUE;
+   TIMERG0.wdt_feed=1;
+   TIMERG0.wdt_wprotect=0;
+   
    // static long oldTime = 0;
    // static bool testSwitchState = false;
    check_time();
@@ -12,19 +16,6 @@ void loop(void)
    #ifdef CONTADOR 
    contador_1 ++;
    switch (contador_1){
-    
-    case 20:
-
-     break;
-
-     case 40:
-
-     break;
-
-     case 60:
-     // #ifdef DEBUG Serial.println("contador 60"); #endif   
-    
-     break;
 
      case 100:
     // #ifdef DEBUG Serial.println("contador 100"); #endif  
@@ -33,22 +24,21 @@ void loop(void)
     ESPUI.updateLabel(aguatempId, String (temp_agua));      
     break;
      
-     case 120:
-
-     break;
-
      case 200:
      tempo_luz(); // comprueba temporizadores
      check_luz();
+     break;
+
+     case 300:
      tempo_ai();
      check_ai();
-
      contador_1 = 0;
+     ESPUI.updateLabel(RSSItempId, String (WiFi.RSSI()));
      break;
    }
    #endif
    
-  if (modo_wifi_cliente == true){
+   if (modo_wifi_cliente == true){
    unsigned long currentMillis = millis();
   // if WiFi is down, try reconnecting every CHECK_WIFI_TIME seconds
   if ((WiFi.status() != WL_CONNECTED) && (currentMillis - previousMillis >=interval)) {

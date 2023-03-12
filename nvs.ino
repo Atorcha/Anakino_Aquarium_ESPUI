@@ -2,7 +2,7 @@
 //************************ Funciones Non Volatile Storage **************************************
 //**********************************************************************************************
 
-void SAVEtoNVS()
+void SAVEparametrosNVS()
 {
   nvs.putInt("temp_agua_des", (temp_agua_des*10));
   nvs.putInt("luz_on_hora", luz_on_hora);
@@ -10,7 +10,11 @@ void SAVEtoNVS()
   nvs.putInt("luz_off_hora", luz_off_hora);
   nvs.putInt("luz_off_minuto", luz_off_minuto);
   nvs.putInt("modo_luz", modo_luz);
+  nvs.end(); // Close the Preferences
+  Serial.println("Graba parámetros en NVS");
+}
 
+  void SAVEaireadorNVS {
   nvs.putInt("ai_on_hora", ai_on_hora);
   nvs.putInt("ai_on_minuto", ai_on_minuto);
   nvs.putInt("ai_off_hora", ai_off_hora);
@@ -20,7 +24,7 @@ void SAVEtoNVS()
  // nvs.putInt("")=int (pwm_absoluto);
  // nvs.putInt("")=int (pwm_percent);
   nvs.end(); // Close the Preferences
-  Serial.println("Graba  en NVS");    
+  Serial.println("Graba aireador en NVS");    
 }
 
 void SAVEwifitoNVS(){
@@ -42,4 +46,5 @@ void READfromNVS()
   ai_off_hora=nvs.getInt("ai_off_hora", 0);
   ai_off_minuto=nvs.getInt("ai_off_minuto", 0);
   modo_ai=nvs.getInt("modo_ai", 0);
+  FirmwareVer = nvs.getString("FirmwareVer", FirmwareVer);
 }

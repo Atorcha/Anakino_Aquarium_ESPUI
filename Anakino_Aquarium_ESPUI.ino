@@ -2,9 +2,9 @@
 ///////////////////////////////////////////////////////////////
 //
 //
-//     CONTROLADOR DE ACUARIO C 
+//     CONTROLADOR DE ACUARIO ANAKINO AQUARIUM 
 //     
-//     V. 23.02
+//     V. 23.03
 //
 //     PLACA ESP32
 //               
@@ -20,9 +20,16 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <NTPClient.h>
-#include <WiFiUdp.h>
+//#include <WiFiUdp.h>
 #include <Preferences.h>
 #include <WiFi.h>
+//#include <WiFiMulti.h>
+#include <HTTPClient.h>
+#include <HTTPUpdate.h>
+#include <WiFiClientSecure.h>
+#include "cert.h"
+#include "soc/timer_group_struct.h"
+#include "soc/timer_group_reg.h"
 #include "time.h"
 
 ////////////////////////////////////////////////////////////////
@@ -31,6 +38,7 @@
     #define CONTADOR
     int contador_1 = 0;   // variable contador del loop
     int contador_2 = 0; // contador para restart en caso de no wifi
+   
 ////////////////////////////////////////////////////////////////
 // Definimos los pines y variables
 ////////////////////////////////////////////////////////////////
@@ -67,9 +75,9 @@ int ai_off_minuto;
 bool modo_wifi_cliente;//  si modo cliente = true checkea la conexion wifi para restart ESP32
 
 
-uint16_t tempHBLabelId, humedadHBLabelId, aguatempId; //statusLabelId;
+uint16_t tempHBLabelId, humedadHBLabelId, aguatempId, RSSItempId;  //statusLabelId;
 uint16_t realtime_LabelId;
-uint16_t button1, button2;
+uint16_t button1, button2, button_ver;
 uint16_t text_time1, text_time2, text_time_ai1, text_time_ai2;
 char timeString[9];
 
@@ -100,6 +108,8 @@ int off2_minuto; //// temporizador 2 minuto OFF
 */
 ////////////////////////////////////////////////////////////////
 
+// WiFiMulti WiFiMulti;
+
 Preferences nvs;
 
 WiFiUDP ntpUDP;
@@ -107,12 +117,21 @@ NTPClient timeClient(ntpUDP, "pool.ntp.org");
 
 String ssid;
 String password;
-
+AsyncWebServer server(8080);
 unsigned long previousMillis = 0;
 unsigned long interval = 30000; 
 
 const char* hostname = "Anakino Aquarium";
+bool OTA = false;
+String FirmwareVer = {
+    "1.0"
+};
 
+#define URL_fw_Version "https://raw.githubusercontent.com/AnakinSpain/Anakino_Aquarium_ESPUI/main/OTA/bin_version.txt"
+#define URL_fw_Bin "https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_ota/fw.bin"
+                   
+//void firmwareUpdate();
+//int FirmwareVersionCheck();
 
 ////////////////////////////////////////////////////////////////
 //ARRANCA  EL SENSOR DE TEMP DEL AGUA 
@@ -156,6 +175,23 @@ void boton2_Callback(Control* sender, int type)
     case B_UP:
         Serial.println("Button UP");
         ESP.restart(); // Restart ESP
+        break;
+    }
+}
+
+void boton_ver_Callback(Control* sender, int type)
+{
+    switch (type)
+    {
+    case B_DOWN:
+        Serial.println("Button DOWN");
+        break;
+
+    case B_UP:
+        Serial.println("Button UP");  // Check version firmware
+        if (FirmwareVersionCheck()) {
+      firmwareUpdate();
+    } 
         break;
     }
 }
@@ -367,6 +403,7 @@ void enterWifiDetailsCallback(Control *sender, int type) {
     nvs.putString("password", (ESPUI.getControl(wifi_pass_text)->value));
     Serial.println("Network Credentials Saved using Preferences");
     nvs.end();
+    ESP.restart(); // Restart ESP
   }
 }
 
