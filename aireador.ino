@@ -4,33 +4,36 @@
 
 void check_ai(){
 
-      if (modo_ai == 1)      // modo aireador en AUTO
+      if (modo_ai == 0)      // modo aireador en AUTO
       {       
-        if (temp_ai == 1 ) // si en hora
+        if (ai == true ) // si en hora
         {
+          digitalWrite(aireador,HIGH); //activa rele
           ESPUI.updateSwitcher(Switch_2, true);      
-        //Serial.println(" AI Auto ON"); 
-          digitalWrite(aireador,HIGH); //activa rele        
+          //Serial.println(" AI Auto ON"); 
+                  
         }
-      else if (temp_ai == 0)
+      else if (ai == false) // si no en hora
       { 
+        digitalWrite(aireador,LOW); //desactiva rele
         ESPUI.updateSwitcher(Switch_2, false);       
         //Serial.println("AI Auto OFF");
-        digitalWrite(aireador,LOW); //desactiva rele
       }
     }
       
-   else if (modo_ai == 2)
+   else if (modo_ai == 1) // modo manual ON
     {
+      digitalWrite(aireador,HIGH); //activa rele   
       ESPUI.updateSwitcher(Switch_2, true);
     //Serial.println("AI Manual ON");  
-      digitalWrite(aireador,HIGH); //activa rele    
       }
     else if   
-      (modo_ai == 3){
+      (modo_ai == 2) // MODO MANUAL OFF
+      {
+      digitalWrite(aireador,LOW); // Apagamos  ai,
       ESPUI.updateSwitcher(Switch_2, false);
      // Serial.println("AI Manual OFF");  
-      digitalWrite(aireador,LOW); // Apagamos  ai,   
+         
     }    
    }
 /////////////////////////////////////////////////////////////////
@@ -43,14 +46,14 @@ void tempo_ai(){
     {       
       if((NumMins(th,tm) >= NumMins(ai_on_hora,ai_on_minuto)) && (NumMins(th,tm) <= NumMins(ai_off_hora,ai_off_minuto)))
       {
-          temp_ai = 1;
+          ai = true;
           
          // Serial.println(" ai true");
         //SetRele(temporizador1, HIGH);        // activa rele
       }
       if (NumMins(th,tm) > NumMins(ai_off_hora,ai_off_minuto))
       {
-         temp_ai = 0;
+         ai = false;
         // ESPUI.updateSwitcher(Switch_4, false);
         // Serial.println(" ai false");
        //SetRele(temporizador1, LOW);       // desactiva rele
@@ -61,7 +64,7 @@ void tempo_ai(){
      // Serial.println(" ai 2");                     
       if(NumMins(th,tm) >= NumMins(ai_on_hora,ai_on_minuto)) 
       {
-         temp_ai = 1;
+         ai = true;
         // ESPUI.updateSwitcher(Switch_4, true);
        //  Serial.println(" ai true");
        //SetRele(temporizador1, HIGH);          // activa rele
@@ -69,14 +72,14 @@ void tempo_ai(){
 
       if (NumMins(th,tm) < NumMins(ai_off_hora,ai_off_minuto)) 
       {
-          temp_ai = 1;
+          ai = true;
         //  ESPUI.updateSwitcher(Switch_4, true);
         //  Serial.println(" ai true");
         //SetRele(temporizador1, HIGH);          //  ACTIVA RELE
       }     
       if ((NumMins(th,tm) >= NumMins(ai_off_hora,ai_off_minuto)) && (NumMins(th,tm) < NumMins(ai_on_hora,ai_on_minuto)))
       {
-          temp_ai = 0;
+          ai = false;
          // ESPUI.updateSwitcher(Switch_4, false);
           //Serial.println(" ai false");
         //SetRele(temporizador1, LOW);         // desactiva rele

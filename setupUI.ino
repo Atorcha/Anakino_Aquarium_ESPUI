@@ -68,7 +68,7 @@ void setupUI(){
     ESPUI.addControl(Max, "", "30", None, mainNumber);
 
     // BOTON GRABAR EN EEPROM
-    button1 = ESPUI.addControl(ControlType::Button, "GRABAR", "Press", ControlColor::Peterriver, param_tab, &boton1_Callback);
+    boton_param = ESPUI.addControl(ControlType::Button, "GRABAR", "Press", ControlColor::Peterriver, param_tab, &boton_param_Callback);
 
   /*
    * Tab: aireador
@@ -91,14 +91,14 @@ void setupUI(){
     ESPUI.setInputType(text_time_ai2, "time");
     
     // BOTON GRABAR EN EEPROM
-    button1 = ESPUI.addControl(ControlType::Button, "GRABAR", "Press", ControlColor::Peterriver, aire_tab, &boton1_Callback);
+    boton_aire = ESPUI.addControl(ControlType::Button, "GRABAR", "Press", ControlColor::Peterriver, aire_tab, &boton_aire_Callback);
   
   /*
    * Tab: RESET
    * Pestaña para grabar o reiniciar el ESP32
    *-----------------------------------------------------------------------------------------------------------*/
     auto reset_tab = ESPUI.addControl(Tab, "", "Reset");
-    button2 = ESPUI.addControl(ControlType::Button, "RESTART ESP32", "Press", ControlColor::Peterriver, reset_tab, &boton2_Callback);
+    boton_restart = ESPUI.addControl(ControlType::Button, "RESTART ESP32", "Press", ControlColor::Peterriver, reset_tab, &boton_restart_Callback);
          
   /*
    * Tab: CONFIGURACION
@@ -114,7 +114,7 @@ void setupUI(){
   ESPUI.addControl(ControlType::Separator, "Actualizar firmware", "", ControlColor::None, config_tab);
 
   // BOTON COMPROBAR VERSION
-    button_ver = ESPUI.addControl(ControlType::Button, "Actualizar firm", "Press", ControlColor::Peterriver, config_tab, &boton_ver_Callback);
+    boton_ver = ESPUI.addControl(ControlType::Button, "Actualizar firm", "Press", ControlColor::Peterriver, config_tab, &boton_ver_Callback);
 
 
     // Enable this option if you want sliders to be continuous (update during move) and not discrete (update on stop)

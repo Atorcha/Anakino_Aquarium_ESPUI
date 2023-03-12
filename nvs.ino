@@ -14,7 +14,7 @@ void SAVEparametrosNVS()
   Serial.println("Graba parámetros en NVS");
 }
 
-  void SAVEaireadorNVS {
+  void SAVEaireadorNVS() {
   nvs.putInt("ai_on_hora", ai_on_hora);
   nvs.putInt("ai_on_minuto", ai_on_minuto);
   nvs.putInt("ai_off_hora", ai_off_hora);

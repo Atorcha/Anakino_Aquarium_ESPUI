@@ -34,6 +34,7 @@ void loop()
      check_ai();
      contador_1 = 0;
      ESPUI.updateLabel(RSSItempId, String (WiFi.RSSI()));
+     timeClient.update();
      break;
    }
    #endif

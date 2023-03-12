@@ -46,7 +46,7 @@
 // mejores pines INPUT 36,39,34,35,32,33,25,26,27,14,23,22,21,19,18
 #define sensores_temp  13  //  Sensores de temp de agua y pantalla leds
 #define calentador 17      // Calentador    * ENCHUFE 1         
-#define luz   18           // luz      * ENCHUFE 2
+#define leds   18           // luz      * ENCHUFE 2
 #define aireador 19          //     * ENCHUFE 3
 #define rele 21             //      * ENCHUFE 4
 
@@ -59,14 +59,14 @@ float temperatura_agua_temp;       // Temperatura temporal del agua
 ///////////////////////////////////////////////////////////
 
 int modo_luz;      // modo de funcionamiento luz
-bool temp_luz;    // Variable para indicar si activa o no la luz
+bool luz;    // Variable para indicar si activa o no la luz
 int luz_on_hora;       // Horario para encender leds.
 int luz_on_minuto;
 int luz_off_hora;      // Horario para apagar leds.
 int luz_off_minuto;
 ////////////////////////////////////////////////////////////
 int modo_ai;      // modo de funcionamiento ai
-bool temp_ai;    // Variable para indicar si activa o no la ai
+bool ai;    // Variable para indicar si activa o no la ai
 int ai_on_hora;       // Horario para encender ai.
 int ai_on_minuto;
 int ai_off_hora;      // Horario para apagar ai.
@@ -77,7 +77,7 @@ bool modo_wifi_cliente;//  si modo cliente = true checkea la conexion wifi para 
 
 uint16_t tempHBLabelId, humedadHBLabelId, aguatempId, RSSItempId;  //statusLabelId;
 uint16_t realtime_LabelId;
-uint16_t button1, button2, button_ver;
+uint16_t boton_param, boton_aire, boton_restart, boton_ver;
 uint16_t text_time1, text_time2, text_time_ai1, text_time_ai2;
 char timeString[9];
 
@@ -148,8 +148,8 @@ DallasTemperature sensors(&oneWire);
 //
 /////////////////////////////////////////////////////////////
 
-/////////////////   BOTON 1   ///////////////////////////////
-void boton1_Callback(Control* sender, int type)
+/////////////////   BOTON PARAMETROS  ///////////////////////////////
+void boton_param_Callback(Control* sender, int type)
 {
     switch (type)
     {
@@ -158,13 +158,27 @@ void boton1_Callback(Control* sender, int type)
         break;
 
     case B_UP:
-        Serial.println("Button UP");
-        SAVEtoNVS();
+        Serial.println("Button UP, graba parametros");
+        SAVEparametrosNVS();
         break;
     }
 }
+/////////////////   BOTON AIRE   ///////////////////////////////
+void boton_aire_Callback(Control* sender, int type)
+{
+    switch (type)
+    {
+    case B_DOWN:
+       // Serial.println("Button DOWN");
+        break;
 
-void boton2_Callback(Control* sender, int type)
+    case B_UP:
+        Serial.println("Button UP, graba aireador");
+        SAVEaireadorNVS();
+        break;
+    }
+}
+void boton_restart_Callback(Control* sender, int type)
 {
     switch (type)
     {
@@ -274,9 +288,9 @@ void selectCall(Control* sender, int value)
     Serial.print(sender->id);
     Serial.print(", Value: ");
     Serial.println(sender->value);
-    if (String(sender->value)==("MODO AUTO")) {(modo_luz = 1);}
-    if (String(sender->value)==("MODO ON")) {(modo_luz = 2);}
-    if (String(sender->value)==("MODO OFF")) {(modo_luz = 3);}
+    if (String(sender->value)==("MODO AUTO")) {(modo_luz = 0);}
+    if (String(sender->value)==("MODO ON")) {(modo_luz = 1);}
+    if (String(sender->value)==("MODO OFF")) {(modo_luz = 2);}
     Serial.print("Modo Luz: ");
     Serial.println(modo_luz);
 }
@@ -287,9 +301,9 @@ void selectCall_2(Control* sender, int value) //// aireador
     Serial.print(sender->id);
     Serial.print(", Value: ");
     Serial.println(sender->value);
-    if (String(sender->value)==("MODO AUTO")) {(modo_ai = 1);}
-    if (String(sender->value)==("MODO ON")) {(modo_ai = 2);}
-    if (String(sender->value)==("MODO OFF")) {(modo_ai = 3);}
+    if (String(sender->value)==("MODO AUTO")) {(modo_ai = 0);}
+    if (String(sender->value)==("MODO ON")) {(modo_ai = 1);}
+    if (String(sender->value)==("MODO OFF")) {(modo_ai = 2);}
     Serial.print("Modo ai: ");
     Serial.println(modo_ai);
 }
