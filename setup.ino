@@ -58,5 +58,5 @@ void setup(void)
     Serial.println(modo_ai);
 
   setupUI();
-  ESPUI.begin("Anakino Aquarium 23.12", "Anakin", "123456");
+  ESPUI.begin("Anakino Aquarium v23.12", "Anakin", "123456");
 }
