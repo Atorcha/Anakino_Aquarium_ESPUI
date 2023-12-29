@@ -1,6 +1,7 @@
 # Anakino_Aquarium_ESPUI
 
 Instrucciones de utilización.
+
 Seleccionar la placa ESP32 DEVMODULE
 
 Instalar las librerias que viene en el listado, pero la libreria ESPUI intalar la que está aquí, porque se ha editado el original CSS.
