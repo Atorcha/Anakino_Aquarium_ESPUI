@@ -21,11 +21,11 @@ void setupUI(){
     ESPUI.addControl(Label, "Agua ºC ", "", ControlColor::Alizarin, status_tab); // temp agua
     
     // card de hora
-    realtime_LabelId= ESPUI.addControl(Label,"Hora:","", ControlColor::Emerald, status_tab);
+    realtime_LabelId= ESPUI.addControl(Label,"Hora:","", ControlColor::Alizarin, status_tab);
 
     // group switchers. AQUI IRA EL ESTADO DE LOS RELES   
   auto gruposreles = 
-  ESPUI.addControl(Switcher, "Estados RELES", "0", Dark, status_tab, generalCallback);
+  ESPUI.addControl(Switcher, "Estados RELES", "0", Alizarin, status_tab, generalCallback);
   Switch_2 = ESPUI.addControl(Switcher, "", "", Sunflower, gruposreles, generalCallback);// aireador
   Switch_3 = ESPUI.addControl(Switcher, "", "", Sunflower, gruposreles, generalCallback);//calentador
   Switch_4 = ESPUI.addControl(Switcher, "", "", Sunflower, gruposreles, generalCallback);//led

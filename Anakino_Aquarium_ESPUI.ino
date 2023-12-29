@@ -4,7 +4,7 @@
 //
 //     CONTROLADOR DE ACUARIO ANAKINO AQUARIUM 
 //     
-//     V. 23.03
+//     V. 23.12
 //
 //     PLACA ESP32
 //               
@@ -46,9 +46,9 @@
 // mejores pines INPUT 36,39,34,35,32,33,25,26,27,14,23,22,21,19,18
 #define sensores_temp  13  //  Sensores de temp de agua y pantalla leds
 #define calentador 17      // Calentador    * ENCHUFE 1         
-#define leds   18           // luz      * ENCHUFE 2
+#define leds   21           // luz      * ENCHUFE 2
 #define aireador 19          //     * ENCHUFE 3
-#define rele 21             //      * ENCHUFE 4
+#define rele 21             //      * ENCHUFE 4 el pin 18 si lo pongo high da error
 
 //*********************** Variables de control de temperatura del agua ********************
 
@@ -119,9 +119,11 @@ String ssid;
 String password;
 AsyncWebServer server(8080);
 unsigned long previousMillis = 0;
+unsigned long reinicio = 0;
 unsigned long interval = 30000; 
 
-const char* hostname = "Anakino Aquarium";
+// String hostname = "ESP32 Anakino";
+
 bool OTA = false;
 String FirmwareVer = {
     "1.0"

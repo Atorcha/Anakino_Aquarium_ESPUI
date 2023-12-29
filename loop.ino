@@ -8,6 +8,10 @@ void loop()
    TIMERG0.wdt_wprotect=TIMG_WDT_WKEY_VALUE;
    TIMERG0.wdt_feed=1;
    TIMERG0.wdt_wprotect=0;
+   reinicio = millis();
+   if (reinicio/1000/60/60 == 24 ){
+    Serial.print("Reinicio diario");}
+   
    
    // static long oldTime = 0;
    // static bool testSwitchState = false;

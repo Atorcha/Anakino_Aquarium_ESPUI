@@ -3,7 +3,7 @@
   void connectWIFI(){  // Connect to Wi-Fi // try to connect to existing network
     
   int connect_timeout;  
-  WiFi.setHostname(hostname);
+ // WiFi.setHostname(hostname);
   Serial.println("Begin wifi...");
   ssid = nvs.getString("ssid", "");
   password = nvs.getString("password", "");
@@ -29,8 +29,9 @@
   modo_wifi_cliente= true;
   Serial.println("Modo Cliente");
   Serial.println("\nTry to connect to: ");
+  WiFi.setHostname("ESP32 Anakino"); //define hostname
   WiFi.mode(WIFI_STA);
-   delay(2000);
+  delay(2000);
   WiFi.begin(ssid.c_str(), password.c_str());
   Serial.println(ssid.c_str());
   Serial.println(password.c_str());
