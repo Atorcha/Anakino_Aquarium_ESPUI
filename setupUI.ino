@@ -18,14 +18,14 @@ void setupUI(){
     
     // grupo de datos
     aguatempId =
-    ESPUI.addControl(Label, "Agua ºC ", "", ControlColor::Alizarin, status_tab); // temp agua
+    ESPUI.addControl(Label, "Agua ºC ", "", ControlColor::Peterriver, status_tab); // temp agua
     
     // card de hora
-    realtime_LabelId= ESPUI.addControl(Label,"Hora:","", ControlColor::Alizarin, status_tab);
+    realtime_LabelId= ESPUI.addControl(Label,"Hora:","", ControlColor::Peterriver, status_tab);
 
     // group switchers. AQUI IRA EL ESTADO DE LOS RELES   
   auto gruposreles = 
-  ESPUI.addControl(Switcher, "Estados RELES", "0", Alizarin, status_tab, generalCallback);
+  ESPUI.addControl(Switcher, "Estados RELES", "0", Peterriver, status_tab, generalCallback);
   Switch_2 = ESPUI.addControl(Switcher, "", "", Sunflower, gruposreles, generalCallback);// aireador
   Switch_3 = ESPUI.addControl(Switcher, "", "", Sunflower, gruposreles, generalCallback);//calentador
   Switch_4 = ESPUI.addControl(Switcher, "", "", Sunflower, gruposreles, generalCallback);//led
@@ -40,7 +40,7 @@ void setupUI(){
   ESPUI.setElementStyle(ESPUI.addControl(Label, "", "LED", None, gruposreles), switcherLabelStyle);
 
   // grupo de datos
-    RSSItempId = ESPUI.addControl(Label, "Señal RSSI: ", "", ControlColor::Alizarin, status_tab); // RSSI
+    RSSItempId = ESPUI.addControl(Label, "Señal RSSI: ", "", ControlColor::Peterriver, status_tab); // RSSI
 
     
   /*
@@ -51,24 +51,24 @@ void setupUI(){
         
     //MODO FUNCIONAMIENTO LUZ
   uint16_t select1
-        = ESPUI.addControl(ControlType::Select, "Modo Luz:", "", ControlColor::Alizarin, param_tab, &selectCall);
-    ESPUI.addControl(ControlType::Option, "MODO AUTO", "MODO AUTO", ControlColor::Alizarin, select1);
-    ESPUI.addControl(ControlType::Option, "MODO ON", "MODO ON", ControlColor::Alizarin, select1);
-    ESPUI.addControl(ControlType::Option, "MODO OFF", "MODO OFF", ControlColor::Alizarin, select1);
+        = ESPUI.addControl(ControlType::Select, "Modo Luz:", "", ControlColor::Peterriver, param_tab, &selectCall);
+    ESPUI.addControl(ControlType::Option, "MODO AUTO", "MODO AUTO", ControlColor::Peterriver, select1);
+    ESPUI.addControl(ControlType::Option, "MODO ON", "MODO ON", ControlColor::Peterriver, select1);
+    ESPUI.addControl(ControlType::Option, "MODO OFF", "MODO OFF", ControlColor::Peterriver, select1);
     
    // INTRODUCCION HORA ENCENDIDA/APAGADA
-    text_time1 = ESPUI.addControl(Text, "Luz", luz_on_temp, Turquoise, param_tab, luz_on_Callback); // INPUT ON DEL PRIMER TIMER
+    text_time1 = ESPUI.addControl(Text, "Luz", luz_on_temp, Peterriver, param_tab, luz_on_Callback); // INPUT ON DEL PRIMER TIMER
     ESPUI.setInputType(text_time1, "time");
-    text_time2 = ESPUI.addControl(Text,"OFF", luz_off_temp, Turquoise, text_time1, luz_off_Callback); // INPUT OFF DEL PRIMER TIMER
+    text_time2 = ESPUI.addControl(Text,"OFF", luz_off_temp, Peterriver, text_time1, luz_off_Callback); // INPUT OFF DEL PRIMER TIMER
     ESPUI.setInputType(text_time2, "time");
 
     // INPUT para la temperatura del agua Number inputs also accept Min and Max components, but you should still validate the values.
-    mainNumber = ESPUI.addControl(Number, "Temperatura agua deseada", "24", Emerald, param_tab, temperatura_Callback);
+    mainNumber = ESPUI.addControl(Number, "Temperatura agua deseada", "24", Peterriver, param_tab, temperatura_Callback);
     ESPUI.addControl(Min, "", "20", None, mainNumber);
     ESPUI.addControl(Max, "", "30", None, mainNumber);
 
     // BOTON GRABAR EN EEPROM
-    boton_param = ESPUI.addControl(ControlType::Button, "GRABAR", "Press", ControlColor::Peterriver, param_tab, &boton_param_Callback);
+    boton_param = ESPUI.addControl(ControlType::Button, "GRABAR", "Press", ControlColor::Alizarin, param_tab, &boton_param_Callback);
 
   /*
    * Tab: aireador
@@ -79,26 +79,26 @@ void setupUI(){
       //MODO AIREADOR
       
   uint16_t select2
-        = ESPUI.addControl(ControlType::Select, "Modo Aireador:", "", ControlColor::Alizarin, aire_tab, &selectCall_2);
-    ESPUI.addControl(ControlType::Option, "MODO AUTO", "MODO AUTO", ControlColor::Alizarin, select2);
-    ESPUI.addControl(ControlType::Option, "MODO ON", "MODO ON", ControlColor::Alizarin, select2);
-    ESPUI.addControl(ControlType::Option, "MODO OFF", "MODO OFF", ControlColor::Alizarin, select2);
+        = ESPUI.addControl(ControlType::Select, "Modo Aireador:", "", ControlColor::Peterriver, aire_tab, &selectCall_2);
+    ESPUI.addControl(ControlType::Option, "MODO AUTO", "MODO AUTO", ControlColor::Peterriver, select2);
+    ESPUI.addControl(ControlType::Option, "MODO ON", "MODO ON", ControlColor::Peterriver, select2);
+    ESPUI.addControl(ControlType::Option, "MODO OFF", "MODO OFF", ControlColor::Peterriver, select2);
     
    // INTRODUCCION HORA ENCENDIDA/APAGADA
-    text_time_ai1 = ESPUI.addControl(Text, "Hora Aireador", ai_on_temp, Turquoise, aire_tab, ai_on_Callback); // INPUT ON DEL PRIMER TIMER
+    text_time_ai1 = ESPUI.addControl(Text, "Hora Aireador", ai_on_temp, Peterriver, aire_tab, ai_on_Callback); // INPUT ON DEL PRIMER TIMER
     ESPUI.setInputType(text_time_ai1, "time");
-    text_time_ai2 = ESPUI.addControl(Text,"OFF", ai_off_temp, Turquoise, text_time_ai1, ai_off_Callback); // INPUT OFF DEL PRIMER TIMER
+    text_time_ai2 = ESPUI.addControl(Text,"OFF", ai_off_temp, Peterriver, text_time_ai1, ai_off_Callback); // INPUT OFF DEL PRIMER TIMER
     ESPUI.setInputType(text_time_ai2, "time");
     
     // BOTON GRABAR EN EEPROM
-    boton_aire = ESPUI.addControl(ControlType::Button, "GRABAR", "Press", ControlColor::Peterriver, aire_tab, &boton_aire_Callback);
+    boton_aire = ESPUI.addControl(ControlType::Button, "GRABAR", "Press", ControlColor::Alizarin, aire_tab, &boton_aire_Callback);
   
   /*
    * Tab: RESET
    * Pestaña para grabar o reiniciar el ESP32
    *-----------------------------------------------------------------------------------------------------------*/
     auto reset_tab = ESPUI.addControl(Tab, "", "Reset");
-    boton_restart = ESPUI.addControl(ControlType::Button, "RESTART ESP32", "Press", ControlColor::Peterriver, reset_tab, &boton_restart_Callback);
+    boton_restart = ESPUI.addControl(ControlType::Button, "RESTART ESP32", "Press", ControlColor::Alizarin, reset_tab, &boton_restart_Callback);
          
   /*
    * Tab: CONFIGURACION
@@ -110,11 +110,11 @@ void setupUI(){
   ESPUI.addControl(Max, "", "32", None, wifi_ssid_text);
   wifi_pass_text = ESPUI.addControl(Text, "Password", "", Alizarin, config_tab, textCallback);
   ESPUI.addControl(Max, "", "64", None, wifi_pass_text);
-  ESPUI.addControl(Button, "Guardar", "Guardar", Peterriver, config_tab, enterWifiDetailsCallback);
+  ESPUI.addControl(Button, "Guardar", "Guardar", Alizarin, config_tab, enterWifiDetailsCallback);
   ESPUI.addControl(ControlType::Separator, "Actualizar firmware", "", ControlColor::None, config_tab);
 
   // BOTON COMPROBAR VERSION
-    boton_ver = ESPUI.addControl(ControlType::Button, "Actualizar firm", "Press", ControlColor::Peterriver, config_tab, &boton_ver_Callback);
+    boton_ver = ESPUI.addControl(ControlType::Button, "Actualizar firm", "Press", ControlColor::Alizarin, config_tab, &boton_ver_Callback);
 
 
     // Enable this option if you want sliders to be continuous (update during move) and not discrete (update on stop)
