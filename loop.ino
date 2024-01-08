@@ -4,17 +4,11 @@
 ///////////////////////////////////////////////////////////////
 
 void loop()
-{    
-   TIMERG0.wdt_wprotect=TIMG_WDT_WKEY_VALUE;
-   TIMERG0.wdt_feed=1;
-   TIMERG0.wdt_wprotect=0;
+{     
    reinicio = millis();
    if (reinicio/1000/60/60 == 24 ){
     Serial.print("Reinicio diario");}
-   
-   
-   // static long oldTime = 0;
-   // static bool testSwitchState = false;
+
    check_time();
    
    #ifdef CONTADOR 
@@ -38,6 +32,7 @@ void loop()
      check_ai();
      contador_1 = 0;
      ESPUI.updateLabel(RSSItempId, String (WiFi.RSSI()));
+//     ESPUI.updateLabel(versionLabelId, String (SemverClass( firmware_version )));
      timeClient.update();
      break;
    }
@@ -46,7 +41,7 @@ void loop()
    if (modo_wifi_cliente == true){
    unsigned long currentMillis = millis();
   // if WiFi is down, try reconnecting every CHECK_WIFI_TIME seconds
-  if ((WiFi.status() != WL_CONNECTED) && (currentMillis - previousMillis >=interval)) {
+  if ((WiFiMulti.run() != WL_CONNECTED) && (currentMillis - previousMillis >=interval)) {
     Serial.print(millis());
     Serial.println("Reconnecting to WiFi...");
     WiFi.disconnect();
@@ -55,7 +50,7 @@ void loop()
     if (contador_2 == 5) {   
     ESP.restart(); // Restart ESP
     previousMillis = currentMillis;
+    }
    }
   }
- }
 }

@@ -46,5 +46,5 @@ void READfromNVS()
   ai_off_hora=nvs.getInt("ai_off_hora", 0);
   ai_off_minuto=nvs.getInt("ai_off_minuto", 0);
   modo_ai=nvs.getInt("modo_ai", 0);
-  FirmwareVer = nvs.getString("FirmwareVer", FirmwareVer);
+  MUST_UPDATE = nvs.getBool("must_update", MUST_UPDATE);
 }

@@ -4,7 +4,7 @@
 //
 //     CONTROLADOR DE ACUARIO ANAKINO AQUARIUM 
 //     
-//     V. 23.12
+//     V. 24.01.03
 //
 //     PLACA ESP32
 //               
@@ -15,22 +15,20 @@
 //Librerias necesarias
 ///////////////////////////////////////////////////////////////
 
-//#include <DNSServer.h>
 #include <ESPUI.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <NTPClient.h>
-//#include <WiFiUdp.h>
 #include <Preferences.h>
 #include <WiFi.h>
-//#include <WiFiMulti.h>
-#include <HTTPClient.h>
-#include <HTTPUpdate.h>
-#include <WiFiClientSecure.h>
-#include "cert.h"
-#include "soc/timer_group_struct.h"
-#include "soc/timer_group_reg.h"
-#include "time.h"
+#include <WiFiMulti.h>
+
+#include "FS.h"
+#include <esp32fota.h>
+////////////////////////////////////////////////////////////////
+
+// esp32fota esp32fota("<Type of Firmware for this device>", <this version>, <validate signature>, <allow insecure https>);
+esp32FOTA esp32FOTA("esp32-fota-http", "24.01.03", false, true);
 
 ////////////////////////////////////////////////////////////////
 
@@ -75,7 +73,7 @@ int ai_off_minuto;
 bool modo_wifi_cliente;//  si modo cliente = true checkea la conexion wifi para restart ESP32
 
 
-uint16_t tempHBLabelId, humedadHBLabelId, aguatempId, RSSItempId;  //statusLabelId;
+uint16_t tempHBLabelId, humedadHBLabelId, aguatempId, RSSItempId, versionLabelId;
 uint16_t realtime_LabelId;
 uint16_t boton_param, boton_aire, boton_restart, boton_ver;
 uint16_t text_time1, text_time2, text_time_ai1, text_time_ai2;
@@ -107,8 +105,10 @@ int off2_hora; /// temporizador 2 hora OFF
 int off2_minuto; //// temporizador 2 minuto OFF
 */
 ////////////////////////////////////////////////////////////////
+   
+////////////////////////////////////////////////////////////////
 
-// WiFiMulti WiFiMulti;
+ WiFiMulti WiFiMulti;
 
 Preferences nvs;
 
@@ -124,16 +124,14 @@ unsigned long interval = 30000;
 
 // String hostname = "ESP32 Anakino";
 
-bool OTA = false;
-String FirmwareVer = {
-    "1.0"
-};
 
-#define URL_fw_Version "https://raw.githubusercontent.com/AnakinSpain/Anakino_Aquarium_ESPUI/main/OTA/bin_version.txt"
-#define URL_fw_Bin "https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_ota/fw.bin"
-                   
-//void firmwareUpdate();
-//int FirmwareVersionCheck();
+/////////////////////////////// FOTA .   /////////////////
+
+bool MUST_UPDATE = false;
+//String firmware_version;
+                
+const char* manifest_url = "https://raw.githubusercontent.com/Atorcha/Anakino_Aquarium_ESPUI/main/OTA/fota.json";
+
 
 ////////////////////////////////////////////////////////////////
 //ARRANCA  EL SENSOR DE TEMP DEL AGUA 
@@ -143,6 +141,9 @@ OneWire oneWire(sensores_temp);      //Sensores de temperatura conectados al pin
 DallasTemperature sensors(&oneWire);
 //DeviceAddress sensor_agua;
 
+void textCallback(Control *sender, int type) {
+  //This callback is needed to handle the changed values, even though it doesn't do anything itself.
+}
 
 ///////////////////////////////////////////////////////////
 //
@@ -200,14 +201,16 @@ void boton_ver_Callback(Control* sender, int type)
     switch (type)
     {
     case B_DOWN:
-        Serial.println("Button DOWN");
+        //Serial.println("Button DOWN");
         break;
 
     case B_UP:
-        Serial.println("Button UP");  // Check version firmware
-        if (FirmwareVersionCheck()) {
-      firmwareUpdate();
-    } 
+        //Serial.println("Button UP");  // Check version firmware
+        nvs.putBool("must_update", true);
+        Serial.println("Graba must_update true y REINICIA");
+        Serial.println();
+        delay (3000);
+        ESP.restart(); // Restart ESP
         break;
     }
 }
@@ -423,9 +426,10 @@ void enterWifiDetailsCallback(Control *sender, int type) {
   }
 }
 
-void textCallback(Control *sender, int type) {
-  //This callback is needed to handle the changed values, even though it doesn't do anything itself.
-}
+
+///////////////////////////////////////////////////////////////////////
+
+
 ///////////////////////////////////////////////////////////////////////
 // FUNCION PARA PASAR LAS HORAS A MINUTOS Y ASI PODER GESTIONAR MEJOR LOS TEMPORIZADORES
 int NumMins(uint8_t ScheduleHour, uint8_t ScheduleMinute)

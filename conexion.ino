@@ -25,6 +25,9 @@
     } 
     while(connect_timeout);
   }
+  
+////////// MODO CLIENTE . ///////
+  
   else {
   modo_wifi_cliente= true;
   Serial.println("Modo Cliente");
@@ -32,11 +35,11 @@
   WiFi.setHostname("ESP32 Anakino"); //define hostname
   WiFi.mode(WIFI_STA);
   delay(2000);
-  WiFi.begin(ssid.c_str(), password.c_str());
+  WiFiMulti.addAP(ssid.c_str(), password.c_str());
   Serial.println(ssid.c_str());
   Serial.println(password.c_str());
   Serial.print("\nConnecting to WiFi ..");
-  while (WiFi.status() != WL_CONNECTED) {
+  while (WiFiMulti.run() != WL_CONNECTED) {
       delay(500);   
       Serial.print('.');
       if (contador_2 == 60) {

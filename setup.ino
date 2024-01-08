@@ -6,11 +6,19 @@ void setup(void)
 {
     Serial.begin(115200);
     Serial.setDebugOutput(true);
+    esp32FOTA.setManifestURL( manifest_url );
+    esp32FOTA.printConfig();
+
     sensors.begin();
     nvs.begin("datos",false); // use "datos" namespace
-    READfromNVS();
-    ESPUI.setVerbosity(Verbosity::Verbose); //Turn ON verbose debugging
+    READfromNVS();    
     connectWIFI();
+    
+    if (MUST_UPDATE == true) {
+      nvs.putBool("must_update", false);
+      firmwareUpdate();
+    }
+    ESPUI.setVerbosity(Verbosity::Verbose); //Turn ON verbose debugging
     timeClient.begin(); // Initialize a NTPClient to get time
     timeClient.setTimeOffset(3600); // Set offset time in seconds to adjust for your timezone, for example:
     // GMT +1 = 3600
@@ -28,8 +36,6 @@ void setup(void)
 /////////////////////////////////////////////////
 
     check_time();
-    Serial.print("Active Firmware Version:");
-    Serial.println(FirmwareVer);
     Serial.print("\nHora actual:");
     Serial.println(timeClient.getFormattedTime());
     Serial.print("Temp deseada: ");
@@ -58,5 +64,5 @@ void setup(void)
     Serial.println(modo_ai);
 
   setupUI();
-  ESPUI.begin("Anakino Aquarium v23.12", "Anakin", "123456");
+  ESPUI.begin("Anakino Aquarium", "Anakin", "123456");
 }
