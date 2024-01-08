@@ -32,7 +32,7 @@ void loop()
      check_ai();
      contador_1 = 0;
      ESPUI.updateLabel(RSSItempId, String (WiFi.RSSI()));
-//     ESPUI.updateLabel(versionLabelId, String (SemverClass( firmware_version )));
+     
      timeClient.update();
      break;
    }

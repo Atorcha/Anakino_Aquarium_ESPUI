@@ -115,7 +115,7 @@ void setupUI(){
 
   // BOTON COMPROBAR VERSION
     boton_ver = ESPUI.addControl(ControlType::Button, "Actualizar firm", "Update", ControlColor::Alizarin, config_tab, &boton_ver_Callback);
-  //  versionLabelId = ESPUI.addControl(Label, "Version Firmware ", "", ControlColor::Peterriver, status_tab); // version firmware
+    versionLabelId = ESPUI.addControl(Label, "Version Firmware ", "", ControlColor::Peterriver, config_tab); // version firmware
 
     // Enable this option if you want sliders to be continuous (update during move) and not discrete (update on stop)
     // ESPUI.sliderContinuous = true;

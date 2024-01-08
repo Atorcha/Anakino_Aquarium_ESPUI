@@ -4,9 +4,10 @@
 //
 //     CONTROLADOR DE ACUARIO ANAKINO AQUARIUM 
 //     
-//     V. 24.01.03
-//
-//     PLACA ESP32
+
+String SemV = "24.01.03";  // VERSION DEL FIRMWARE
+
+//           PLACA ESP32
 //               
 //
 ///////////////////////////////////////////////////////////////
@@ -28,7 +29,7 @@
 ////////////////////////////////////////////////////////////////
 
 // esp32fota esp32fota("<Type of Firmware for this device>", <this version>, <validate signature>, <allow insecure https>);
-esp32FOTA esp32FOTA("esp32-fota-http", "24.01.03", false, true);
+esp32FOTA esp32FOTA("esp32-fota-http", SemV, false, true);
 
 ////////////////////////////////////////////////////////////////
 

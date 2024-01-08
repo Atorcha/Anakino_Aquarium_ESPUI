@@ -8,7 +8,7 @@ void setup(void)
     Serial.setDebugOutput(true);
     esp32FOTA.setManifestURL( manifest_url );
     esp32FOTA.printConfig();
-
+    
     sensors.begin();
     nvs.begin("datos",false); // use "datos" namespace
     READfromNVS();    
@@ -65,4 +65,5 @@ void setup(void)
 
   setupUI();
   ESPUI.begin("Anakino Aquarium", "Anakin", "123456");
+  ESPUI.updateLabel(versionLabelId, String (SemV));
 }
