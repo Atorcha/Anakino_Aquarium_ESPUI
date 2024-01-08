@@ -5,7 +5,7 @@
 Seleccionar la placa ESP32 DEVMODULE
 
 ## MODO AP
-La primera vez que se instale el software, el esp32 crea un red wifi. Nos conectamos a ella e introducimos la IP 192.168.4.1 en el navefador y nos dará la opcion de añadir el nombre SSID y la contraseña de la red a la que queremos conectar el controlador. Importante pulsar ENTER despues de introducir cada valor y luego darle a GRABAR.
+La primera vez que se instale el software, el esp32 crea un red wifi. Nos conectamos a ella e introducimos la IP 192.168.4.1 en el navegador y nos dará la opcion de añadir el nombre SSID y la contraseña de la red a la que queremos conectar el controlador. Importante pulsar ENTER despues de introducir cada valor y luego darle a GRABAR. Se reiniciará solo y accederemos a el desde la IP que le asigne el router.
 ## MODO CLIENTE
 En el monitor serial podemos ver la IP que le ha asignado el router. Puede ser conveniente dejarla fija para poder acceder a ella desde fuera de casa mediante algun servicio DDNS gratuito.
 
