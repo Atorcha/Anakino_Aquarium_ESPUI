@@ -5,7 +5,7 @@
 //     CONTROLADOR DE ACUARIO ANAKINO AQUARIUM 
 //     
 
-String SemV = "24.01.03";  // VERSION DEL FIRMWARE
+String SemV = "24.01.16";  // VERSION DEL FIRMWARE
 
 //           PLACA ESP32
 //               
@@ -22,7 +22,6 @@ String SemV = "24.01.03";  // VERSION DEL FIRMWARE
 #include <NTPClient.h>
 #include <Preferences.h>
 #include <WiFi.h>
-#include <WiFiMulti.h>
 
 #include "FS.h"
 #include <esp32fota.h>
@@ -74,7 +73,7 @@ int ai_off_minuto;
 bool modo_wifi_cliente;//  si modo cliente = true checkea la conexion wifi para restart ESP32
 
 
-uint16_t tempHBLabelId, humedadHBLabelId, aguatempId, RSSItempId, versionLabelId;
+uint16_t tempHBLabelId, humedadHBLabelId, aguatempId, RSSItempId, versionLabelId, estadotempId;
 uint16_t realtime_LabelId;
 uint16_t boton_param, boton_aire, boton_restart, boton_ver;
 uint16_t text_time1, text_time2, text_time_ai1, text_time_ai2;
@@ -105,11 +104,13 @@ int on2_minuto; //// temporizador 2 minuto ON
 int off2_hora; /// temporizador 2 hora OFF
 int off2_minuto; //// temporizador 2 minuto OFF
 */
+
+String estado;
+
 ////////////////////////////////////////////////////////////////
    
 ////////////////////////////////////////////////////////////////
 
- WiFiMulti WiFiMulti;
 
 Preferences nvs;
 
@@ -123,8 +124,7 @@ unsigned long previousMillis = 0;
 unsigned long reinicio = 0;
 unsigned long interval = 30000; 
 
-// String hostname = "ESP32 Anakino";
-
+String hostname = "ESP32_Anakino";
 
 /////////////////////////////// FOTA .   /////////////////
 
@@ -207,11 +207,19 @@ void boton_ver_Callback(Control* sender, int type)
 
     case B_UP:
         //Serial.println("Button UP");  // Check version firmware
+        
+    bool updatedNeeded = esp32FOTA.execHTTPcheck();
+    if (updatedNeeded)
+      {
         nvs.putBool("must_update", true);
-        Serial.println("Graba must_update true y REINICIA");
-        Serial.println();
+        ESPUI.updateLabel(estadotempId, String ("Necesita actualizar..."));
+        Serial.println("Necesita actualizar...");
         delay (3000);
-        ESP.restart(); // Restart ESP
+        ESP.restart(); // Restart ESP32              
+      } 
+        ESPUI.updateLabel(estadotempId, String ("NO UPDATE"));
+        Serial.println("NO necesita actualizar...");
+        delay (3000);     
         break;
     }
 }

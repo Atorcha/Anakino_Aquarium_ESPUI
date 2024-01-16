@@ -3,12 +3,12 @@
 //////////////   UPDATE     //////////////////////
 /////////////////////////////////////////////////
 
-void firmwareUpdate(void) {
-
-  bool updatedNeeded = esp32FOTA.execHTTPcheck();
-  if (updatedNeeded)
-  {
-    esp32FOTA.execOTA();
-  }
-  delay(3000);
+void firmwareUpdate(void) 
+    {
+  nvs.putBool("must_update", false);
+  esp32FOTA.execOTA();
+  estado = "REINICIANDO...";
+  ESPUI.updateLabel(estadotempId, String (estado));
+  delay (3000);
+  ESP.restart(); // Restart ESP32
 }

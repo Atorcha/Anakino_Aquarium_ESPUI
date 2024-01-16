@@ -19,7 +19,9 @@ void loop()
     // #ifdef DEBUG Serial.println("contador 100"); #endif  
     check_temp();        // Comprueba valores temperatura  
     check_calentador();  // Comprueba si activa el calentador
-    ESPUI.updateLabel(aguatempId, String (temp_agua));      
+    ESPUI.updateLabel(aguatempId, String (temp_agua)); 
+    //estado = "Running...";
+    ESPUI.updateLabel(estadotempId, String ("Running..."));     
     break;
      
      case 200:
@@ -31,8 +33,7 @@ void loop()
      tempo_ai();
      check_ai();
      contador_1 = 0;
-     ESPUI.updateLabel(RSSItempId, String (WiFi.RSSI()));
-     
+     ESPUI.updateLabel(RSSItempId, String (WiFi.RSSI()));     
      timeClient.update();
      break;
    }
@@ -41,7 +42,7 @@ void loop()
    if (modo_wifi_cliente == true){
    unsigned long currentMillis = millis();
   // if WiFi is down, try reconnecting every CHECK_WIFI_TIME seconds
-  if ((WiFiMulti.run() != WL_CONNECTED) && (currentMillis - previousMillis >=interval)) {
+  if ((WiFi.status() != WL_CONNECTED) && (currentMillis - previousMillis >=interval)) {
     Serial.print(millis());
     Serial.println("Reconnecting to WiFi...");
     WiFi.disconnect();

@@ -3,7 +3,7 @@
   void connectWIFI(){  // Connect to Wi-Fi // try to connect to existing network
     
   int connect_timeout;  
- // WiFi.setHostname(hostname);
+  WiFi.setHostname(hostname.c_str()); //define hostname
   Serial.println("Begin wifi...");
   ssid = nvs.getString("ssid", "");
   password = nvs.getString("password", "");
@@ -26,20 +26,21 @@
     while(connect_timeout);
   }
   
-////////// MODO CLIENTE . ///////
+////////// MODO CLIENTE . ///////////////////////////////////////
   
   else {
   modo_wifi_cliente= true;
   Serial.println("Modo Cliente");
   Serial.println("\nTry to connect to: ");
-  WiFi.setHostname("ESP32 Anakino"); //define hostname
+  WiFi.setHostname(hostname.c_str()); //define hostname
   WiFi.mode(WIFI_STA);
   delay(2000);
-  WiFiMulti.addAP(ssid.c_str(), password.c_str());
+  WiFi.begin(ssid.c_str(), password.c_str());
+  Serial.println(hostname.c_str()); 
   Serial.println(ssid.c_str());
   Serial.println(password.c_str());
   Serial.print("\nConnecting to WiFi ..");
-  while (WiFiMulti.run() != WL_CONNECTED) {
+  while (WiFi.status() != WL_CONNECTED) {
       delay(500);   
       Serial.print('.');
       if (contador_2 == 60) {
@@ -59,4 +60,12 @@
     Serial.println(WiFi.getMode() == WIFI_AP ? WiFi.softAPIP() : WiFi.localIP());
     delay(1000);
   
+}
+
+void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info){
+  Serial.println("Disconnected from WiFi access point");
+  Serial.print("WiFi lost connection. Reason: ");
+  Serial.println(info.wifi_sta_disconnected.reason);
+  Serial.println("Trying to Reconnect");
+  WiFi.begin(ssid.c_str(), password.c_str());
 }

@@ -11,11 +11,11 @@ void setup(void)
     
     sensors.begin();
     nvs.begin("datos",false); // use "datos" namespace
-    READfromNVS();    
+    READfromNVS();  
+    WiFi.onEvent(WiFiStationDisconnected, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);  
     connectWIFI();
     
     if (MUST_UPDATE == true) {
-      nvs.putBool("must_update", false);
       firmwareUpdate();
     }
     ESPUI.setVerbosity(Verbosity::Verbose); //Turn ON verbose debugging
@@ -66,4 +66,5 @@ void setup(void)
   setupUI();
   ESPUI.begin("Anakino Aquarium", "Anakin", "123456");
   ESPUI.updateLabel(versionLabelId, String (SemV));
+  ESPUI.updateLabel(estadotempId, String (estado));
 }
