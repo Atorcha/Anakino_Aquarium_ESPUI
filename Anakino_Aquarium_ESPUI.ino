@@ -5,7 +5,7 @@
 //     CONTROLADOR DE ACUARIO ANAKINO AQUARIUM 
 //     
 
-String SemV = "24.01.16";  // VERSION DEL FIRMWARE
+String SemV = "24.01.17";  // VERSION DEL FIRMWARE
 
 //           PLACA ESP32
 //               
@@ -72,8 +72,7 @@ int ai_off_minuto;
 
 bool modo_wifi_cliente;//  si modo cliente = true checkea la conexion wifi para restart ESP32
 
-
-uint16_t tempHBLabelId, humedadHBLabelId, aguatempId, RSSItempId, versionLabelId, estadotempId;
+uint16_t tempHBLabelId, humedadHBLabelId, aguatempId, RSSItempId, versionLabelId, estadoId;
 uint16_t realtime_LabelId;
 uint16_t boton_param, boton_aire, boton_restart, boton_ver;
 uint16_t text_time1, text_time2, text_time_ai1, text_time_ai2;
@@ -81,6 +80,8 @@ char timeString[9];
 
 //UI handles
 uint16_t wifi_ssid_text, wifi_pass_text;
+char userLogin_text;
+char passLogin_text;
 uint16_t mainLabel, gruposreles, Switch_4, Switch_3, Switch_2, Switch_1, mainSlider, mainText, mainNumber, mainScrambleButton, mainTime;
 uint16_t styleButton, styleLabel, styleSwitcher, styleSlider, styleButton2, styleLabel2, styleSlider2;
 
@@ -105,7 +106,8 @@ int off2_hora; /// temporizador 2 hora OFF
 int off2_minuto; //// temporizador 2 minuto OFF
 */
 
-String estado;
+ String  userLogin;
+ String  passLogin;
 
 ////////////////////////////////////////////////////////////////
    
@@ -182,20 +184,23 @@ void boton_aire_Callback(Control* sender, int type)
         break;
     }
 }
+/////////////////   BOTON RESTART   ///////////////////////////////
+
 void boton_restart_Callback(Control* sender, int type)
 {
     switch (type)
     {
     case B_DOWN:
-        Serial.println("Button DOWN");
+        Serial.println("Button RESTART DOWN");
         break;
 
     case B_UP:
-        Serial.println("Button UP");
+        Serial.println("Button RESTART UP");
         ESP.restart(); // Restart ESP
         break;
     }
 }
+/////////////////   BOTON UPDATE   ///////////////////////////////
 
 void boton_ver_Callback(Control* sender, int type)
 {
@@ -211,21 +216,18 @@ void boton_ver_Callback(Control* sender, int type)
     bool updatedNeeded = esp32FOTA.execHTTPcheck();
     if (updatedNeeded)
       {
-        nvs.putBool("must_update", true);
-        ESPUI.updateLabel(estadotempId, String ("Necesita actualizar..."));
-        Serial.println("Necesita actualizar...");
-        delay (3000);
-        ESP.restart(); // Restart ESP32              
+         necesita_update();    
       } 
-        ESPUI.updateLabel(estadotempId, String ("NO UPDATE"));
-        Serial.println("NO necesita actualizar...");
-        delay (3000);     
+        no_necesita_update();
         break;
     }
 }
 
 //Most elements in this test UI are assigned this generic callback which prints some
 //basic information. Event types are defined in ESPUI.h
+
+/////////////////   CARD LUZ   ///////////////////////////////
+
 void luz_on_Callback(Control *sender, int type) ///////////////// luz
 {
   Serial.print("CB: id(");
@@ -247,6 +249,7 @@ void luz_on_Callback(Control *sender, int type) ///////////////// luz
  Serial.print("Luz ON numMins: ");
  Serial.println(NumMins(luz_on_hora,luz_on_minuto));
 }
+
 
    void luz_off_Callback(Control *sender, int type) 
    {
@@ -435,6 +438,19 @@ void enterWifiDetailsCallback(Control *sender, int type) {
   }
 }
 
+void enterLoginDetailsCallback(Control *sender, int type) {
+  if(type == B_UP) {
+    Serial.println("Saving User login to NVS...");
+    Serial.println(ESPUI.getControl(userLogin_text)->value);
+    Serial.println(ESPUI.getControl(passLogin_text)->value);
+
+    nvs.putString("user", (ESPUI.getControl(userLogin_text)->value)); 
+    nvs.putString("pass", (ESPUI.getControl(passLogin_text)->value));
+    Serial.println("Login Credentials Saved using Preferences");
+    nvs.end();
+    ESP.restart(); // Restart ESP
+  }
+}
 
 ///////////////////////////////////////////////////////////////////////
 

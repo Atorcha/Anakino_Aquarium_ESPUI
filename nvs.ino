@@ -30,6 +30,13 @@ void SAVEparametrosNVS()
 void SAVEwifitoNVS(){
   nvs.putString("ssid", ssid);
   nvs.putString("password", password);
+  nvs.end(); // Close the Preferences
+}
+
+void SAVElogintoNVS(){
+  nvs.putString("user", userLogin);
+  nvs.putString("pass", passLogin);
+  nvs.end(); // Close the Preferences
 }
 
 void READfromNVS()
@@ -47,4 +54,15 @@ void READfromNVS()
   ai_off_minuto=nvs.getInt("ai_off_minuto", 0);
   modo_ai=nvs.getInt("modo_ai", 0);
   MUST_UPDATE = nvs.getBool("must_update", MUST_UPDATE);
+}
+
+void READLoginfromNVS()
+{
+  userLogin = nvs.getString("user", "");
+  passLogin = nvs.getString("pass", "");
+  
+  if (userLogin == "" || passLogin == ""){
+    userLogin = "Anakin";
+    passLogin = "1234";
+  }
 }

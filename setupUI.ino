@@ -104,13 +104,24 @@ void setupUI(){
    * Tab: CONFIGURACION
    * You use this tab to enter the SSID and password of a wifi network to autoconnect to.
    *-----------------------------------------------------------------------------------------------------------*/
+  ///////////////////////// UPDATE WIFI
   auto config_tab = ESPUI.addControl(Tab, "", "Configuracion");
+  // WIFI
   wifi_ssid_text = ESPUI.addControl(Text, "SSID", "", Peterriver, config_tab, textCallback);
   //Note that adding a "Max" control to a text control sets the max length
   ESPUI.addControl(Max, "", "32", None, wifi_ssid_text);
   wifi_pass_text = ESPUI.addControl(Text, "Password", "", Peterriver, config_tab, textCallback);
   ESPUI.addControl(Max, "", "64", None, wifi_pass_text);
   ESPUI.addControl(Button, "Guardar", "Guardar", Alizarin, config_tab, enterWifiDetailsCallback);
+
+  ////////////////////////// UPDATE LOGIN
+  ESPUI.addControl(ControlType::Separator, "Actualizar login", "", ControlColor::None, config_tab);
+  userLogin_text = ESPUI.addControl(Text, "USER Login", "", Peterriver, config_tab, textCallback);
+  //Note that adding a "Max" control to a text control sets the max length
+  passLogin_text = ESPUI.addControl(Text, "Password login", "", Peterriver, config_tab, textCallback);
+  ESPUI.addControl(Button, "Guardar", "Guardar", Alizarin, config_tab, enterLoginDetailsCallback);
+  
+  /////////////////////////// UPDATE FIRM
   ESPUI.addControl(ControlType::Separator, "Actualizar firmware", "", ControlColor::None, config_tab);
 
   // BOTON COMPROBAR VERSION
@@ -118,7 +129,7 @@ void setupUI(){
     versionLabelId = ESPUI.addControl(Label, "Version Firmware ", "", ControlColor::Peterriver, config_tab); // version firmware
     
  // LABEL ESTATUS
-   estadotempId = ESPUI.addControl(Label, "Status: ", "Estado", ControlColor::Peterriver, config_tab); // STATUS
+   estadoId = ESPUI.addControl(Label, "Status: ", "Estado", ControlColor::Peterriver, config_tab); // STATUS
 
    
     // Enable this option if you want sliders to be continuous (update during move) and not discrete (update on stop)

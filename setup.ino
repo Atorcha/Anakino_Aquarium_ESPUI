@@ -11,7 +11,8 @@ void setup(void)
     
     sensors.begin();
     nvs.begin("datos",false); // use "datos" namespace
-    READfromNVS();  
+    READfromNVS();
+    READLoginfromNVS();  
     WiFi.onEvent(WiFiStationDisconnected, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);  
     connectWIFI();
     
@@ -36,6 +37,8 @@ void setup(void)
 /////////////////////////////////////////////////
 
     check_time();
+    
+    
     Serial.print("\nHora actual:");
     Serial.println(timeClient.getFormattedTime());
     Serial.print("Temp deseada: ");
@@ -62,9 +65,12 @@ void setup(void)
     Serial.println(ai_off_temp);
     Serial.print("Modo Aireador: ");
     Serial.println(modo_ai);
-
+    Serial.println(userLogin.c_str()); 
+    Serial.println(passLogin.c_str());
+    
+    
   setupUI();
-  ESPUI.begin("Anakino Aquarium", "Anakin", "123456");
+  ESPUI.begin("Anakino Aquarium", userLogin.c_str(), passLogin.c_str());
   ESPUI.updateLabel(versionLabelId, String (SemV));
-  ESPUI.updateLabel(estadotempId, String (estado));
+  //ESPUI.updateLabel(estadotempId, String (estado));
 }

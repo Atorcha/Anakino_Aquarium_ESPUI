@@ -7,7 +7,9 @@ void loop()
 {     
    reinicio = millis();
    if (reinicio/1000/60/60 == 24 ){
-    Serial.print("Reinicio diario");}
+    Serial.print("Reinicio diario");
+    ESP.restart(); // Restart ESP
+    }
 
    check_time();
    
@@ -21,7 +23,7 @@ void loop()
     check_calentador();  // Comprueba si activa el calentador
     ESPUI.updateLabel(aguatempId, String (temp_agua)); 
     //estado = "Running...";
-    ESPUI.updateLabel(estadotempId, String ("Running..."));     
+    //ESPUI.updateLabel(estadotempId, String ("Running..."));     
     break;
      
      case 200:
@@ -32,9 +34,13 @@ void loop()
      case 300:
      tempo_ai();
      check_ai();
-     contador_1 = 0;
      ESPUI.updateLabel(RSSItempId, String (WiFi.RSSI()));     
      timeClient.update();
+     break;
+     
+     case 1000:
+     contador_1 = 0;
+     //ESPUI.updateLabel(estadoId, String ("Running..."));
      break;
    }
    #endif
