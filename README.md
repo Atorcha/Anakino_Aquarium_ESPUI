@@ -18,5 +18,6 @@ Se se ha activado la actualizacion via desde internet del firmware. Solamente ha
 
 ## VERSIONS
 -24.01.17 Añadida la opción de modificar el user y el pass del login al panel. Por defecto es Anakin y 1234
+- 24.01.18 Reparada actualizacion y modificacion codigo update
   
 
