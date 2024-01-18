@@ -1,5 +1,5 @@
 {
     "type": "esp32-fota-http",
     "version": "24.01.18",
-    "url": "http://raw.githubusercontent.com/Atorcha/Anakino_Aquarium_ESPUI/main/OTA/firm.bin"
+    "url": "https://raw.githubusercontent.com/Atorcha/Anakino_Aquarium_ESPUI/main/OTA/firm.bin"
 }
