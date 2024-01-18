@@ -107,6 +107,7 @@ void setupUI(){
   ///////////////////////// UPDATE WIFI
   auto config_tab = ESPUI.addControl(Tab, "", "Configuracion");
   // WIFI
+  ESPUI.addControl(ControlType::Separator, "Configurar WIFI", "", ControlColor::None, config_tab);
   wifi_ssid_text = ESPUI.addControl(Text, "SSID", "", Peterriver, config_tab, textCallback);
   //Note that adding a "Max" control to a text control sets the max length
   ESPUI.addControl(Max, "", "32", None, wifi_ssid_text);
@@ -127,10 +128,6 @@ void setupUI(){
   // BOTON COMPROBAR VERSION
     boton_ver = ESPUI.addControl(ControlType::Button, "Actualizar Firmware", "Update", ControlColor::Alizarin, config_tab, &boton_ver_Callback);
     versionLabelId = ESPUI.addControl(Label, "Version Firmware ", "", ControlColor::Peterriver, config_tab); // version firmware
-    
- // LABEL ESTATUS
-   estadoId = ESPUI.addControl(Label, "Status: ", "Estado", ControlColor::Peterriver, config_tab); // STATUS
-
    
     // Enable this option if you want sliders to be continuous (update during move) and not discrete (update on stop)
     // ESPUI.sliderContinuous = true;

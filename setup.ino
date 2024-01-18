@@ -7,19 +7,22 @@ void setup(void)
     Serial.begin(115200);
     Serial.setDebugOutput(true);
     esp32FOTA.setManifestURL( manifest_url );
-    esp32FOTA.printConfig();
-    
+    esp32FOTA.printConfig();  
     sensors.begin();
     nvs.begin("datos",false); // use "datos" namespace
     READfromNVS();
     READLoginfromNVS();  
     WiFi.onEvent(WiFiStationDisconnected, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);  
-    connectWIFI();
-    
+    connectWIFI();          
     if (MUST_UPDATE == true) {
-      firmwareUpdate();
+        nvs.putBool("must_update", false);
+        Serial.println("Ha reiniciado ...y empieza actualizacion");
+        esp32FOTA.execHTTPcheck();       
+        esp32FOTA.execOTA();
+        delay (2000);
     }
-    ESPUI.setVerbosity(Verbosity::Verbose); //Turn ON verbose debugging
+    
+  //  ESPUI.setVerbosity(Verbosity::Verbose); //Turn ON verbose debugging
     timeClient.begin(); // Initialize a NTPClient to get time
     timeClient.setTimeOffset(3600); // Set offset time in seconds to adjust for your timezone, for example:
     // GMT +1 = 3600

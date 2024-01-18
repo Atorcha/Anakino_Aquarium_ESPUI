@@ -5,7 +5,7 @@
 //     CONTROLADOR DE ACUARIO ANAKINO AQUARIUM 
 //     
 
-String SemV = "24.01.17";  // VERSION DEL FIRMWARE
+String SemV = "24.01.18";  // VERSION DEL FIRMWARE
 
 //           PLACA ESP32
 //               
@@ -29,6 +29,7 @@ String SemV = "24.01.17";  // VERSION DEL FIRMWARE
 
 // esp32fota esp32fota("<Type of Firmware for this device>", <this version>, <validate signature>, <allow insecure https>);
 esp32FOTA esp32FOTA("esp32-fota-http", SemV, false, true);
+const char* manifest_url = "https://raw.githubusercontent.com/Atorcha/Anakino_Aquarium_ESPUI/main/OTA/fota.json";
 
 ////////////////////////////////////////////////////////////////
 
@@ -72,7 +73,7 @@ int ai_off_minuto;
 
 bool modo_wifi_cliente;//  si modo cliente = true checkea la conexion wifi para restart ESP32
 
-uint16_t tempHBLabelId, humedadHBLabelId, aguatempId, RSSItempId, versionLabelId, estadoId;
+uint16_t tempHBLabelId, humedadHBLabelId, aguatempId, RSSItempId, versionLabelId;
 uint16_t realtime_LabelId;
 uint16_t boton_param, boton_aire, boton_restart, boton_ver;
 uint16_t text_time1, text_time2, text_time_ai1, text_time_ai2;
@@ -131,11 +132,7 @@ String hostname = "ESP32_Anakino";
 /////////////////////////////// FOTA .   /////////////////
 
 bool MUST_UPDATE = false;
-//String firmware_version;
                 
-const char* manifest_url = "https://raw.githubusercontent.com/Atorcha/Anakino_Aquarium_ESPUI/main/OTA/fota.json";
-
-
 ////////////////////////////////////////////////////////////////
 //ARRANCA  EL SENSOR DE TEMP DEL AGUA 
 ///////////////////////////////////////////////////////////////
@@ -211,14 +208,17 @@ void boton_ver_Callback(Control* sender, int type)
         break;
 
     case B_UP:
-        //Serial.println("Button UP");  // Check version firmware
-        
-    bool updatedNeeded = esp32FOTA.execHTTPcheck();
+    
+    Serial.println("Check update");  // Check version firmware    
+    bool updatedNeeded = esp32FOTA.execHTTPcheck(); 
     if (updatedNeeded)
       {
-         necesita_update();    
+        nvs.putBool("must_update", true);
+        Serial.println("Necesita actualizar...y reinicia");
+        delay (3000);
+        ESP.restart(); // Restart ESP32     
       } 
-        no_necesita_update();
+        Serial.println("NO necesita actualizar...");
         break;
     }
 }
