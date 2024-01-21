@@ -15,11 +15,13 @@ Se se ha activado la actualizacion via desde internet del firmware. Solamente ha
 
 ## TO DO
 
-- Ajuste temperatura con un decimal.
+- 
 
 
 ## VERSIONS
 - 24.01.17 Añadida la opción de modificar el user y el pass del login al panel. Por defecto es Anakin y 1234
 - 24.01.18 Reparada actualizacion y modificacion codigo update
+- 24.02.00 mejora de los paneles de info y configuracion revisado codigo para limpieza 
   
-
+## Contacto
+Hay un grupo de telegram sobre el proyecto para aclarar dudas: https://t.me/Anakino_aquarium
