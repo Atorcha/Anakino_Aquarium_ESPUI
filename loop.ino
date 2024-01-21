@@ -45,7 +45,7 @@ void loop()
    }
    #endif
    
-   if (modo_wifi_cliente == true){
+   /*if (modo_wifi_cliente == true){
    unsigned long currentMillis = millis();
   // if WiFi is down, try reconnecting every CHECK_WIFI_TIME seconds
   if ((WiFi.status() != WL_CONNECTED) && (currentMillis - previousMillis >=interval)) {
@@ -60,4 +60,5 @@ void loop()
     }
    }
   }
+  */
 }

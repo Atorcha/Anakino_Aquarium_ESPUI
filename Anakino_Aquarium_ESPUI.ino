@@ -5,7 +5,7 @@
 //     CONTROLADOR DE ACUARIO ANAKINO AQUARIUM 
 //     
 
-String SemV = "24.01.18";  // VERSION DEL FIRMWARE
+String SemV = "24.02.00";  // VERSION DEL FIRMWARE
 
 //           PLACA ESP32
 //               
@@ -22,7 +22,6 @@ String SemV = "24.01.18";  // VERSION DEL FIRMWARE
 #include <NTPClient.h>
 #include <Preferences.h>
 #include <WiFi.h>
-
 #include "FS.h"
 #include <esp32fota.h>
 ////////////////////////////////////////////////////////////////
@@ -52,17 +51,17 @@ const char* manifest_url = "https://raw.githubusercontent.com/Atorcha/Anakino_Aq
 //*********************** Variables de control de temperatura del agua ********************
 
 float temp_agua;             //Temperatura del agua
-unsigned char temp_agua_des;         //temperatura agua deseada
-int contador_temp = 0;
+float temp_agua_des;         //temperatura agua deseada
+byte contador_temp = 0;
 float temperatura_agua_temp;       // Temperatura temporal del agua
 ///////////////////////////////////////////////////////////
 
-int modo_luz;      // modo de funcionamiento luz
+byte modo_luz;      // modo de funcionamiento luz
 bool luz;    // Variable para indicar si activa o no la luz
-int luz_on_hora;       // Horario para encender leds.
-int luz_on_minuto;
-int luz_off_hora;      // Horario para apagar leds.
-int luz_off_minuto;
+byte luz_on_hora;       // Horario para encender leds.
+byte luz_on_minuto;
+byte luz_off_hora;      // Horario para apagar leds.
+byte luz_off_minuto;
 ////////////////////////////////////////////////////////////
 int modo_ai;      // modo de funcionamiento ai
 bool ai;    // Variable para indicar si activa o no la ai
@@ -70,8 +69,6 @@ int ai_on_hora;       // Horario para encender ai.
 int ai_on_minuto;
 int ai_off_hora;      // Horario para apagar ai.
 int ai_off_minuto;
-
-bool modo_wifi_cliente;//  si modo cliente = true checkea la conexion wifi para restart ESP32
 
 uint16_t tempHBLabelId, humedadHBLabelId, aguatempId, RSSItempId, versionLabelId;
 uint16_t realtime_LabelId;
@@ -83,8 +80,9 @@ char timeString[9];
 uint16_t wifi_ssid_text, wifi_pass_text;
 char userLogin_text;
 char passLogin_text;
-uint16_t mainLabel, gruposreles, Switch_4, Switch_3, Switch_2, Switch_1, mainSlider, mainText, mainNumber, mainScrambleButton, mainTime;
+uint16_t mainLabel, gruposreles, Switch_4, Switch_3, Switch_2, Switch_1, mainSlider, mainText, mainScrambleButton, mainTime;
 uint16_t styleButton, styleLabel, styleSwitcher, styleSlider, styleButton2, styleLabel2, styleSlider2;
+float mainNumber;
 
 // Variables to save date and time
 String realtime;
@@ -122,10 +120,12 @@ NTPClient timeClient(ntpUDP, "pool.ntp.org");
 
 String ssid;
 String password;
+bool modo_wifi_cliente;//  si modo cliente = true checkea la conexion wifi para restart ESP32
+
 AsyncWebServer server(8080);
-unsigned long previousMillis = 0;
+//unsigned long previousMillis = 0;
 unsigned long reinicio = 0;
-unsigned long interval = 30000; 
+//unsigned long interval = 30000; 
 
 String hostname = "ESP32_Anakino";
 
@@ -151,7 +151,139 @@ void textCallback(Control *sender, int type) {
 //
 /////////////////////////////////////////////////////////////
 
-/////////////////   BOTON PARAMETROS  ///////////////////////////////
+//   PESTAÑA  TEMP AGUA 
+  void temperatura_Callback(Control *sender, int type) 
+  {
+  Serial.print("CB: id(");
+  Serial.print(sender->id);
+  Serial.print(") Type(");
+  Serial.print(type);
+  Serial.print(") '");
+  Serial.print(sender->label);
+  Serial.print("' = ");
+  Serial.println(sender->value);
+  temp_agua_des = (sender->value).toFloat();
+  Serial.print("Temp agua deseada: ");
+  Serial.println(temp_agua_des);
+}
+
+
+/////////////////   CARD LUZ   ///////////////////////////////
+void selectCall(Control* sender, int value) // MODO LUZ
+{
+    Serial.print("Select: ID: ");
+    Serial.print(sender->id);
+    Serial.print(", Value: ");
+    Serial.println(sender->value);
+    if (String(sender->value)==("MODO AUTO")) {(modo_luz = 0);}
+    if (String(sender->value)==("MODO ON")) {(modo_luz = 1);}
+    if (String(sender->value)==("MODO OFF")) {(modo_luz = 2);}
+    Serial.print("Modo Luz: ");
+    Serial.println(modo_luz);
+}
+
+void luz_on_Callback(Control *sender, int type) // HORA ON LUZ
+{
+  Serial.print("CB: id(");
+  Serial.print(sender->id);
+  Serial.print(") Type(");
+  Serial.print(type);
+  Serial.print(") '");
+  Serial.print(sender->label);
+  Serial.print("' = ");
+  Serial.println(sender->value);
+  //Convert the hours. Rely on the fact that it will stop converting when it hits the :
+  luz_on_hora = sender->value.toInt();
+  //Look for the : 
+ char *mins_str = strstr(sender->value.c_str(), ":");
+ //strstr returns a pointer to where the : was found. Increment past it.
+ mins_str += 1;
+ //And finally convert the rest of the string.
+ luz_on_minuto = String(mins_str).toInt();
+ Serial.print("Luz ON numMins: ");
+ Serial.println(NumMins(luz_on_hora,luz_on_minuto));
+}
+
+void luz_off_Callback(Control *sender, int type) // HORA OFF LUZ
+   {
+  Serial.print("CB: id(");
+  Serial.print(sender->id);
+  Serial.print(") Type(");
+  Serial.print(type);
+  Serial.print(") '");
+  Serial.print(sender->label);
+  Serial.print("' = ");
+  Serial.println(sender->value);
+    //Convert the hours. Rely on the fact that it will stop converting when it hits the :
+    luz_off_hora = sender->value.toInt();
+    //Look for the : 
+   char *mins_str = strstr(sender->value.c_str(), ":");
+   //strstr returns a pointer to where the : was found. Increment past it.
+   mins_str += 1;
+   //And finally convert the rest of the string.
+   luz_off_minuto = String(mins_str).toInt();
+   Serial.print("Luz OFF NumMins: ");
+   Serial.println(NumMins(luz_off_hora,luz_off_minuto));
+   }
+
+/////////////////   CARD AIREADOR   ///////////////////////////////
+void selectCall_2(Control* sender, int value) // MODO AIREADOR
+{
+    Serial.print("Select: ID: ");
+    Serial.print(sender->id);
+    Serial.print(", Value: ");
+    Serial.println(sender->value);
+    if (String(sender->value)==("MODO AUTO")) {(modo_ai = 0);}
+    if (String(sender->value)==("MODO ON")) {(modo_ai = 1);}
+    if (String(sender->value)==("MODO OFF")) {(modo_ai = 2);}
+    Serial.print("Modo ai: ");
+    Serial.println(modo_ai);
+}
+
+void ai_on_Callback(Control *sender, int type) // HORARIO aireador
+{
+  Serial.print("CB: id(");
+  Serial.print(sender->id);
+  Serial.print(") Type(");
+  Serial.print(type);
+  Serial.print(") '");
+  Serial.print(sender->label);
+  Serial.print("' = ");
+  Serial.println(sender->value);
+  //Convert the hours. Rely on the fact that it will stop converting when it hits the :
+  ai_on_hora = sender->value.toInt();
+  //Look for the : 
+ char *mins_str = strstr(sender->value.c_str(), ":");
+ //strstr returns a pointer to where the : was found. Increment past it.
+ mins_str += 1;
+ //And finally convert the rest of the string.
+ ai_on_minuto = String(mins_str).toInt();
+ Serial.print("Ai ON numMins: ");
+ Serial.println(NumMins(ai_on_hora,ai_on_minuto));
+}
+
+void ai_off_Callback(Control *sender, int type) 
+   {
+  Serial.print("CB: id(");
+  Serial.print(sender->id);
+  Serial.print(") Type(");
+  Serial.print(type);
+  Serial.print(") '");
+  Serial.print(sender->label);
+  Serial.print("' = ");
+  Serial.println(sender->value);
+    //Convert the hours. Rely on the fact that it will stop converting when it hits the :
+    ai_off_hora = sender->value.toInt();
+    //Look for the : 
+   char *mins_str = strstr(sender->value.c_str(), ":");
+   //strstr returns a pointer to where the : was found. Increment past it.
+   mins_str += 1;
+   //And finally convert the rest of the string.
+   ai_off_minuto = String(mins_str).toInt();
+   Serial.print("ai OFF NumMins: ");
+   Serial.println(NumMins(ai_off_hora,ai_off_minuto));
+   }
+
 void boton_param_Callback(Control* sender, int type)
 {
     switch (type)
@@ -166,37 +298,8 @@ void boton_param_Callback(Control* sender, int type)
         break;
     }
 }
-/////////////////   BOTON AIRE   ///////////////////////////////
-void boton_aire_Callback(Control* sender, int type)
-{
-    switch (type)
-    {
-    case B_DOWN:
-       // Serial.println("Button DOWN");
-        break;
 
-    case B_UP:
-        Serial.println("Button UP, graba aireador");
-        SAVEaireadorNVS();
-        break;
-    }
-}
-/////////////////   BOTON RESTART   ///////////////////////////////
 
-void boton_restart_Callback(Control* sender, int type)
-{
-    switch (type)
-    {
-    case B_DOWN:
-        Serial.println("Button RESTART DOWN");
-        break;
-
-    case B_UP:
-        Serial.println("Button RESTART UP");
-        ESP.restart(); // Restart ESP
-        break;
-    }
-}
 /////////////////   BOTON UPDATE   ///////////////////////////////
 
 void boton_ver_Callback(Control* sender, int type)
@@ -223,70 +326,30 @@ void boton_ver_Callback(Control* sender, int type)
     }
 }
 
+/////////////////   BOTON RESTART   ///////////////////////////////
+
+void boton_restart_Callback(Control* sender, int type)
+{
+    switch (type)
+    {
+    case B_DOWN:
+        //Serial.println("Button RESTART DOWN");
+        break;
+
+    case B_UP:
+        Serial.println("Boton reinicio presionado");
+        ESP.restart(); // Restart ESP
+        break;
+    }
+}
+
 //Most elements in this test UI are assigned this generic callback which prints some
 //basic information. Event types are defined in ESPUI.h
 
-/////////////////   CARD LUZ   ///////////////////////////////
-
-void luz_on_Callback(Control *sender, int type) ///////////////// luz
-{
-  Serial.print("CB: id(");
-  Serial.print(sender->id);
-  Serial.print(") Type(");
-  Serial.print(type);
-  Serial.print(") '");
-  Serial.print(sender->label);
-  Serial.print("' = ");
-  Serial.println(sender->value);
-  //Convert the hours. Rely on the fact that it will stop converting when it hits the :
-  luz_on_hora = sender->value.toInt();
-  //Look for the : 
- char *mins_str = strstr(sender->value.c_str(), ":");
- //strstr returns a pointer to where the : was found. Increment past it.
- mins_str += 1;
- //And finally convert the rest of the string.
- luz_on_minuto = String(mins_str).toInt();
- Serial.print("Luz ON numMins: ");
- Serial.println(NumMins(luz_on_hora,luz_on_minuto));
-}
 
 
-   void luz_off_Callback(Control *sender, int type) 
-   {
-  Serial.print("CB: id(");
-  Serial.print(sender->id);
-  Serial.print(") Type(");
-  Serial.print(type);
-  Serial.print(") '");
-  Serial.print(sender->label);
-  Serial.print("' = ");
-  Serial.println(sender->value);
-    //Convert the hours. Rely on the fact that it will stop converting when it hits the :
-    luz_off_hora = sender->value.toInt();
-    //Look for the : 
-   char *mins_str = strstr(sender->value.c_str(), ":");
-   //strstr returns a pointer to where the : was found. Increment past it.
-   mins_str += 1;
-   //And finally convert the rest of the string.
-   luz_off_minuto = String(mins_str).toInt();
-   Serial.print("Luz OFF NumMins: ");
-   Serial.println(NumMins(luz_off_hora,luz_off_minuto));
-   }
 
-  void temperatura_Callback(Control *sender, int type) 
-  {
-  Serial.print("CB: id(");
-  Serial.print(sender->id);
-  Serial.print(") Type(");
-  Serial.print(type);
-  Serial.print(") '");
-  Serial.print(sender->label);
-  Serial.print("' = ");
-  Serial.println(sender->value);
-  temp_agua_des = sender->value.toInt();
-  Serial.print("Temp agua deseada: ");
-  Serial.println(temp_agua_des);
-}
+
 
 void generalCallback(Control *sender, int type) {
   Serial.print("CB: id(");
@@ -299,82 +362,14 @@ void generalCallback(Control *sender, int type) {
   Serial.println(sender->value);
 }
 
-void selectCall(Control* sender, int value)
-{
-    Serial.print("Select: ID: ");
-    Serial.print(sender->id);
-    Serial.print(", Value: ");
-    Serial.println(sender->value);
-    if (String(sender->value)==("MODO AUTO")) {(modo_luz = 0);}
-    if (String(sender->value)==("MODO ON")) {(modo_luz = 1);}
-    if (String(sender->value)==("MODO OFF")) {(modo_luz = 2);}
-    Serial.print("Modo Luz: ");
-    Serial.println(modo_luz);
-}
 
-void selectCall_2(Control* sender, int value) //// aireador
-{
-    Serial.print("Select: ID: ");
-    Serial.print(sender->id);
-    Serial.print(", Value: ");
-    Serial.println(sender->value);
-    if (String(sender->value)==("MODO AUTO")) {(modo_ai = 0);}
-    if (String(sender->value)==("MODO ON")) {(modo_ai = 1);}
-    if (String(sender->value)==("MODO OFF")) {(modo_ai = 2);}
-    Serial.print("Modo ai: ");
-    Serial.println(modo_ai);
-}
-
-void ai_on_Callback(Control *sender, int type) ///////////////// aireador
-{
-  Serial.print("CB: id(");
-  Serial.print(sender->id);
-  Serial.print(") Type(");
-  Serial.print(type);
-  Serial.print(") '");
-  Serial.print(sender->label);
-  Serial.print("' = ");
-  Serial.println(sender->value);
-  //Convert the hours. Rely on the fact that it will stop converting when it hits the :
-  ai_on_hora = sender->value.toInt();
-  //Look for the : 
- char *mins_str = strstr(sender->value.c_str(), ":");
- //strstr returns a pointer to where the : was found. Increment past it.
- mins_str += 1;
- //And finally convert the rest of the string.
- ai_on_minuto = String(mins_str).toInt();
- Serial.print("Ai ON numMins: ");
- Serial.println(NumMins(ai_on_hora,ai_on_minuto));
-}
-
-   void ai_off_Callback(Control *sender, int type) 
-   {
-  Serial.print("CB: id(");
-  Serial.print(sender->id);
-  Serial.print(") Type(");
-  Serial.print(type);
-  Serial.print(") '");
-  Serial.print(sender->label);
-  Serial.print("' = ");
-  Serial.println(sender->value);
-    //Convert the hours. Rely on the fact that it will stop converting when it hits the :
-    ai_off_hora = sender->value.toInt();
-    //Look for the : 
-   char *mins_str = strstr(sender->value.c_str(), ":");
-   //strstr returns a pointer to where the : was found. Increment past it.
-   mins_str += 1;
-   //And finally convert the rest of the string.
-   ai_off_minuto = String(mins_str).toInt();
-   Serial.print("ai OFF NumMins: ");
-   Serial.println(NumMins(ai_off_hora,ai_off_minuto));
-   }
 
 
 void numberCall(Control* sender, int type)
 {
     Serial.println(sender->value);
 }
-
+/*
 void padExample(Control* sender, int value)
 {
     switch (value)
@@ -423,7 +418,7 @@ void padExample(Control* sender, int value)
     Serial.print(" ");
     Serial.println(sender->id);
 }
-
+*/
 void enterWifiDetailsCallback(Control *sender, int type) {
   if(type == B_UP) {
     Serial.println("Saving credentials to NVS...");

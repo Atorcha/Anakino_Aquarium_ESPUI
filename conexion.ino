@@ -36,10 +36,8 @@
   WiFi.mode(WIFI_STA);
   delay(2000);
   WiFi.begin(ssid.c_str(), password.c_str());
-  Serial.println(hostname.c_str()); 
   Serial.println(ssid.c_str());
   Serial.println(password.c_str());
-  Serial.print("\nConnecting to WiFi ..");
   while (WiFi.status() != WL_CONNECTED) {
       delay(500);   
       Serial.print('.');
@@ -49,12 +47,11 @@
    contador_2++; 
   delay(1000);
   }
-    Serial.println("Connected to AP");
+    Serial.print("Connected to AP");
     Serial.print("RRSI: ");
     Serial.println(WiFi.RSSI());  
 }
-    Serial.println("\nWiFi parameters:");
-    Serial.print("Mode: ");
+    Serial.print("Modo: ");
     Serial.println(WiFi.getMode() == WIFI_AP ? "Station" : "Client");
     Serial.print("IP address: ");
     Serial.println(WiFi.getMode() == WIFI_AP ? WiFi.softAPIP() : WiFi.localIP());
@@ -67,5 +64,9 @@ void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info){
   Serial.print("WiFi lost connection. Reason: ");
   Serial.println(info.wifi_sta_disconnected.reason);
   Serial.println("Trying to Reconnect");
-  WiFi.begin(ssid.c_str(), password.c_str());
+  WiFi.begin(ssid.c_str(), password.c_str());    
+    contador_2++;
+    if (contador_2 == 5) {   
+    ESP.restart(); // Restart ESP
+    }
 }
