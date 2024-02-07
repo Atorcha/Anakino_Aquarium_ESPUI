@@ -1,5 +1,15 @@
 # Anakino_Aquarium_ESPUI
 
+## Componentes utilizados
+
+- ESP32 y la placa de expansion ( ESP32 TYPE-C, USB, CH340C, WiFi + Bluetooth https://a.aliexpress.com/_EuOpbz7 )
+- DES18B20 y módulo sensor (  https://a.aliexpress.com/_EvZ7Wb7 )
+- Reles Solidos ( estos reles no hace ruido cuando abren o cierran: https://a.aliexpress.com/_EJaN06h )
+
+
+
+
+
 ## Instrucciones de utilización.
 
 Seleccionar la placa ESP32 DEVMODULE
