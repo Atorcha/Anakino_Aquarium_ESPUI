@@ -1,5 +1,9 @@
 # Anakino_Aquarium_ESPUI
 
+## Primera Instalación
+Utilizar el archivo inicio.ini de la carpeta Inicio. Editar el SSID y el PASS de la wifi. Automacticamente se conectará y descargará la última version del software y tendrá grabado ya los parámetros de wifi. Se puede ver los datos de la IP a través del puerto serial.
+Añadir la libreria ESP32FOTA incluida en esa carpeta.
+
 ## Componentes utilizados
 
 - ESP32 y la placa de expansion ( ESP32 TYPE-C, USB, CH340C, WiFi + Bluetooth https://a.aliexpress.com/_EuOpbz7 )
